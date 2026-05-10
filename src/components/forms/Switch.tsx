@@ -1,7 +1,7 @@
-import { useFieldContext } from "#/hooks/demo.form-context";
 import { useStore } from "@tanstack/react-form";
-import { Field, FieldError, } from "../ui/field";
 import { Switch as ShadcnSwitch } from "#/components/ui/switch";
+import { useFieldContext } from "#/hooks/demo.form-context";
+import { Field, FieldError } from "../ui/field";
 import { Label } from "../ui/label";
 
 export function Switch({ label }: { label: string }) {
