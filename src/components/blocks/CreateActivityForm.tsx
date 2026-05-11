@@ -29,10 +29,10 @@ export function CreateActivityForm() {
 	return (
 		<div>
 			<Card>
-				<CardHeader className="text-center">
+				<CardHeader className="">
 					<CardTitle className="text-xl">Create a New Activity</CardTitle>
 					<CardDescription>
-						TODO: some description change it later
+						First let't give it a name, then define what data you want to track
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -61,7 +61,7 @@ export function CreateActivityForm() {
 				<CardFooter className="flex flex-col">
 					<form.AppForm>
 						<form.SubscribeButton
-							label="Create Activity"
+							label="Next"
 							className="w-full"
 							form={formId}
 						/>

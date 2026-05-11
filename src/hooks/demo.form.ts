@@ -1,4 +1,5 @@
 import { createFormHook } from "@tanstack/react-form";
+import { QualitativeLabelsInput } from "#/components/forms/QualitativeLabelsInput";
 import { Select } from "#/components/forms/Select";
 import { SubscribeButton } from "#/components/forms/SubmitButton";
 import { TextArea } from "#/components/forms/TextArea";
@@ -14,6 +15,7 @@ export const { useAppForm } = createFormHook({
 		TextArea,
 		Slider,
 		Switch,
+		QualitativeLabelsInput,
 	},
 	formComponents: {
 		SubscribeButton,
