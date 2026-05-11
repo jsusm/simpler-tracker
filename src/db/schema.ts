@@ -7,7 +7,7 @@ export const activities = p.pgTable("activities", {
 	createdAt: p.timestamp("created_at").defaultNow(),
 });
 
-export const quialitativeMetricLabels = p.pgTable("quialitative_metric_labels", {
+export const qualitativeMetricLabels = p.pgTable("quialitative_metric_labels", {
 	id: p.serial().primaryKey(),
 	label: p.varchar({ length: 120 }).notNull(),
 	order: p.smallint().notNull(),
@@ -18,10 +18,13 @@ export const quialitativeMetricLabels = p.pgTable("quialitative_metric_labels", 
 	createdAt: p.timestamp("created_at").defaultNow(),
 });
 
+export const metricsEnumValues = ["numeric", "qualitative"] as const;
+export type MetricsEnumValuesType = keyof typeof metricsEnumValues;
+
 // NOTE: Maybe the metrics can be separated by type in diferent tables
 export const metrics = p.pgTable("metrics", {
 	id: p.serial().primaryKey(),
 	label: p.varchar({ length: 120 }).notNull(),
-	type: p.varchar({ enum: ["numeric", "qualitative"], length: 12 }).notNull(),
+	type: p.varchar({ enum: metricsEnumValues, length: 12 }).notNull(),
 	createdAt: p.timestamp("created_at").defaultNow(),
 });
