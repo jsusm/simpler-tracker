@@ -1,7 +1,5 @@
-import { useNavigate } from "@tanstack/react-router";
 import { useId } from "react";
 import { useAppForm } from "#/hooks/demo.form";
-import { createActivitySF } from "#/server/activities";
 import {
 	Card,
 	CardContent,
@@ -11,18 +9,17 @@ import {
 	CardTitle,
 } from "../ui/card";
 import { FieldGroup, FieldSet } from "../ui/field";
+import { type CreateActivityDispatcherType, type CreateActivityStepFormStateType } from '#/hooks/useCreateActivityFormState'
 
-export function CreateActivityForm() {
-	const navigator = useNavigate();
+export function CreateActivityForm({dispatcher: formDispatcher, formState: activityFormState}: {dispatcher: CreateActivityDispatcherType, formState: CreateActivityStepFormStateType}) {
 	const form = useAppForm({
 		defaultValues: {
-			title: "",
-			description: "",
+			title: activityFormState.data.title,
+			description: activityFormState.data.description,
 		},
 		async onSubmit({ value }) {
-			console.log("hello world");
-			await createActivitySF({ data: value });
-			navigator({ to: "/" });
+      console.log({value})
+      formDispatcher({type: 'setActivityDone', payload: value})
 		},
 	});
 	const formId = useId();

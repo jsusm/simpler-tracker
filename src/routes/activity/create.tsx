@@ -1,20 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CreateActivityForm } from "#/components/blocks/CreateActivityForm";
 import { CreateMetricForm } from "#/components/blocks/CreateMetricForm";
+import { ActivityFormCheckout } from "#/components/blocks/ActivityFormCheckout";
+import { useEffect, useReducer } from "react";
+import { CreateActivityStepFormReducer, getCreateActivityStepFormState, saveCreateActivityStepFormState, type CreateActivityDispatcherType, type CreateActivityStepFormStateType, type CreateActivityStepFormStepState } from "#/hooks/useCreateActivityFormState";
+import { CreateActivityForm } from "#/components/blocks/CreateActivityForm";
 
 export const Route = createFileRoute("/activity/create")({
-	component: RouteComponent,
+  component: RouteComponent,
 });
 
+const activityFormStateComponents: { [key in CreateActivityStepFormStepState['state']]: React.FC<{ dispatcher: CreateActivityDispatcherType, formState: CreateActivityStepFormStateType }> } = {
+  'activityForm': CreateActivityForm,
+  'checkout': ActivityFormCheckout,
+  'metricForm': CreateMetricForm,
+}
+
 function RouteComponent() {
-	return (
-		<div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-			<div className="flex w-full max-w-md flex-col gap-6">
-				{/* <CreateActivityForm /> */}
-				<CreateActivityForm />
-				<CreateMetricForm />
-				{/* <CreateMetricForm /> */}
-			</div>
-		</div>
-	);
+  const [formState, stepFormDispatcher] = useReducer(CreateActivityStepFormReducer, getCreateActivityStepFormState())
+  useEffect(() => {
+    saveCreateActivityStepFormState(formState)
+  }, [formState])
+  const CurrComp = activityFormStateComponents[formState.stepState.state]
+  return (
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted px-2 py-10 md:p-10">
+      <div className="flex w-full max-w-md flex-col gap-6">
+        <CurrComp formState={formState} dispatcher={stepFormDispatcher} />
+      </div>
+    </div>
+  );
 }
