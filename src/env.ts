@@ -24,8 +24,8 @@ export const env = createEnv({
 	runtimeEnv: {
 		SERVER_URL: process.env.SERVER_URL,
 		DATABASE_URL: process.env.DATABASE_URL,
-    VITE_APP_TITLE: import.meta.env.VITE_APP_TITLE,
-  },
+		VITE_APP_TITLE: import.meta.env.VITE_APP_TITLE,
+	},
 
 	/**
 	 * By default, this library will feed the environment variables directly to

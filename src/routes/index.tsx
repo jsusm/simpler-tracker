@@ -1,10 +1,7 @@
-import {
-	FieldGroup,
-	FieldSet,
-} from "#/components/ui/field";
+import { createFileRoute } from "@tanstack/react-router";
+import { FieldGroup, FieldSet } from "#/components/ui/field";
 import { useAppForm } from "#/hooks/demo.form";
 import { createActivitySF } from "#/server/activities";
-import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -14,10 +11,10 @@ function App() {
 			title: "",
 			description: "",
 		},
-    async onSubmit({value, formApi}) {
-      await createActivitySF({ data: value })
-      formApi.reset()
-    }
+		async onSubmit({ value, formApi }) {
+			await createActivitySF({ data: value });
+			formApi.reset();
+		},
 	});
 	return (
 		<main>
@@ -40,9 +37,9 @@ function App() {
 						/>
 					</FieldGroup>
 				</FieldSet>
-        <form.AppForm>
-        <form.SubscribeButton label="Submit" />
-        </form.AppForm>
+				<form.AppForm>
+					<form.SubscribeButton label="Submit" />
+				</form.AppForm>
 			</form>
 		</main>
 	);

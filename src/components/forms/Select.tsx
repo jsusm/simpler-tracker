@@ -1,6 +1,6 @@
-import { useFieldContext } from "#/hooks/demo.form-context";
 import { useStore } from "@tanstack/react-form";
-import { FieldDescription, FieldError, Field } from "../ui/field";
+import { useFieldContext } from "#/hooks/demo.form-context";
+import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import * as ShadcnSelect from "../ui/select";
 
 export function Select({
@@ -19,6 +19,7 @@ export function Select({
 
 	return (
 		<Field>
+			<FieldLabel>{label}</FieldLabel>
 			<ShadcnSelect.Select
 				name={field.name}
 				value={field.state.value}

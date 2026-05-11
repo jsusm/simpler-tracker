@@ -1,7 +1,7 @@
-import { useFieldContext } from "#/hooks/demo.form-context";
 import { useStore } from "@tanstack/react-form";
-import { FieldDescription, FieldError, Field, FieldLabel } from "../ui/field";
 import { Slider as ShadcnSlider } from "#/components/ui/slider";
+import { useFieldContext } from "#/hooks/demo.form-context";
+import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 
 export function Slider({
 	label,
