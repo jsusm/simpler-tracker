@@ -25,7 +25,7 @@ import { listActivitiesSF } from "#/server/activities";
 
 export const Route = createFileRoute("/activities/")({
 	component: RouteComponent,
-	loader: async ({}) => {
+	loader: async () => {
 		return { activities: await listActivitiesSF() };
 	},
 });
@@ -76,9 +76,9 @@ function RouteComponent() {
 				) : (
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:grid-cols-3 md:gap-4">
 						{activities.map((a) => (
-							<Item className="bg-card" variant="outline" asChild>
+							<Item className="bg-card" variant="outline" key={a.id} asChild>
 								<Link
-									to="/activities/$activityId"
+									to="/activity/$activityId"
 									params={{ activityId: a.id.toString() }}
 								>
 									<ItemContent>

@@ -16,6 +16,7 @@ import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-qu
 import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
+import { Route as ActivityActivityIdRouteImport } from './routes/activity/$activityId'
 import { Route as ActivitiesCreateRouteImport } from './routes/activities/create'
 import { Route as ActivitiesActivityIdRouteImport } from './routes/activities/$activityId'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
@@ -56,6 +57,11 @@ const DemoDrizzleRoute = DemoDrizzleRouteImport.update({
   path: '/demo/drizzle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActivityActivityIdRoute = ActivityActivityIdRouteImport.update({
+  id: '/activity/$activityId',
+  path: '/activity/$activityId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ActivitiesCreateRoute = ActivitiesCreateRouteImport.update({
   id: '/activities/create',
   path: '/activities/create',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/activities/create': typeof ActivitiesCreateRoute
+  '/activity/$activityId': typeof ActivityActivityIdRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/table': typeof DemoTableRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/activities/create': typeof ActivitiesCreateRoute
+  '/activity/$activityId': typeof ActivityActivityIdRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/table': typeof DemoTableRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/activities/create': typeof ActivitiesCreateRoute
+  '/activity/$activityId': typeof ActivityActivityIdRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/table': typeof DemoTableRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/activities/$activityId'
     | '/activities/create'
+    | '/activity/$activityId'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/table'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/activities/$activityId'
     | '/activities/create'
+    | '/activity/$activityId'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/table'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/activities/$activityId'
     | '/activities/create'
+    | '/activity/$activityId'
     | '/demo/drizzle'
     | '/demo/neon'
     | '/demo/table'
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ActivitiesActivityIdRoute: typeof ActivitiesActivityIdRoute
   ActivitiesCreateRoute: typeof ActivitiesCreateRoute
+  ActivityActivityIdRoute: typeof ActivityActivityIdRoute
   DemoDrizzleRoute: typeof DemoDrizzleRoute
   DemoNeonRoute: typeof DemoNeonRoute
   DemoTableRoute: typeof DemoTableRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoDrizzleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/activity/$activityId': {
+      id: '/activity/$activityId'
+      path: '/activity/$activityId'
+      fullPath: '/activity/$activityId'
+      preLoaderRoute: typeof ActivityActivityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/activities/create': {
       id: '/activities/create'
       path: '/activities/create'
@@ -260,6 +280,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ActivitiesActivityIdRoute: ActivitiesActivityIdRoute,
   ActivitiesCreateRoute: ActivitiesCreateRoute,
+  ActivityActivityIdRoute: ActivityActivityIdRoute,
   DemoDrizzleRoute: DemoDrizzleRoute,
   DemoNeonRoute: DemoNeonRoute,
   DemoTableRoute: DemoTableRoute,
