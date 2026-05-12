@@ -1,5 +1,9 @@
 import { useId } from "react";
 import { useAppForm } from "#/hooks/demo.form";
+import type {
+	CreateActivityDispatcherType,
+	CreateActivityStepFormStateType,
+} from "#/hooks/useCreateActivityFormState";
 import {
 	Card,
 	CardContent,
@@ -9,17 +13,22 @@ import {
 	CardTitle,
 } from "../ui/card";
 import { FieldGroup, FieldSet } from "../ui/field";
-import { type CreateActivityDispatcherType, type CreateActivityStepFormStateType } from '#/hooks/useCreateActivityFormState'
 
-export function CreateActivityForm({dispatcher: formDispatcher, formState: activityFormState}: {dispatcher: CreateActivityDispatcherType, formState: CreateActivityStepFormStateType}) {
+export function CreateActivityForm({
+	dispatcher: formDispatcher,
+	formState: activityFormState,
+}: {
+	dispatcher: CreateActivityDispatcherType;
+	formState: CreateActivityStepFormStateType;
+}) {
 	const form = useAppForm({
 		defaultValues: {
 			title: activityFormState.data.title,
 			description: activityFormState.data.description,
 		},
 		async onSubmit({ value }) {
-      console.log({value})
-      formDispatcher({type: 'setActivityDone', payload: value})
+			console.log({ value });
+			formDispatcher({ type: "setActivityDone", payload: value });
 		},
 	});
 	const formId = useId();
