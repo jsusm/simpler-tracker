@@ -27,5 +27,5 @@ export const metrics = p.pgTable("metrics", {
 	label: p.varchar({ length: 120 }).notNull(),
 	type: p.varchar({ enum: metricsEnumValues, length: 12 }).notNull(),
 	createdAt: p.timestamp("created_at").defaultNow(),
-  activityId: p.serial().references(() => activities.id),
+	activityId: p.serial().references(() => activities.id),
 });

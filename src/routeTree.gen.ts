@@ -17,6 +17,7 @@ import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as DemoNeonRouteImport } from './routes/demo/neon'
 import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as ActivitiesCreateRouteImport } from './routes/activities/create'
+import { Route as ActivitiesActivityIdRouteImport } from './routes/activities/$activityId'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
 import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
 
@@ -60,6 +61,11 @@ const ActivitiesCreateRoute = ActivitiesCreateRouteImport.update({
   path: '/activities/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActivitiesActivityIdRoute = ActivitiesActivityIdRouteImport.update({
+  id: '/activities/$activityId',
+  path: '/activities/$activityId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
   id: '/demo/form/simple',
   path: '/demo/form/simple',
@@ -74,6 +80,7 @@ const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/activities/create': typeof ActivitiesCreateRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/activities/create': typeof ActivitiesCreateRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/activities/create': typeof ActivitiesCreateRoute
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/neon': typeof DemoNeonRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/activities/$activityId'
     | '/activities/create'
     | '/demo/drizzle'
     | '/demo/neon'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/activities/$activityId'
     | '/activities/create'
     | '/demo/drizzle'
     | '/demo/neon'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/activities/$activityId'
     | '/activities/create'
     | '/demo/drizzle'
     | '/demo/neon'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ActivitiesActivityIdRoute: typeof ActivitiesActivityIdRoute
   ActivitiesCreateRoute: typeof ActivitiesCreateRoute
   DemoDrizzleRoute: typeof DemoDrizzleRoute
   DemoNeonRoute: typeof DemoNeonRoute
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ActivitiesCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/activities/$activityId': {
+      id: '/activities/$activityId'
+      path: '/activities/$activityId'
+      fullPath: '/activities/$activityId'
+      preLoaderRoute: typeof ActivitiesActivityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo/form/simple': {
       id: '/demo/form/simple'
       path: '/demo/form/simple'
@@ -238,6 +258,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ActivitiesActivityIdRoute: ActivitiesActivityIdRoute,
   ActivitiesCreateRoute: ActivitiesCreateRoute,
   DemoDrizzleRoute: DemoDrizzleRoute,
   DemoNeonRoute: DemoNeonRoute,

@@ -77,7 +77,10 @@ function RouteComponent() {
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:grid-cols-3 md:gap-4">
 						{activities.map((a) => (
 							<Item className="bg-card" variant="outline" asChild>
-								<a href="#">
+								<Link
+									to="/activities/$activityId"
+									params={{ activityId: a.id.toString() }}
+								>
 									<ItemContent>
 										<ItemTitle>{a.title}</ItemTitle>
 										<ItemDescription>{a.description}</ItemDescription>
@@ -85,7 +88,7 @@ function RouteComponent() {
 									<ItemActions>
 										<ChevronRightIcon className="size-4" />
 									</ItemActions>
-								</a>
+								</Link>
 							</Item>
 						))}
 					</div>
