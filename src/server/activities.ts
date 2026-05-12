@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { eq } from "drizzle-orm";
 import * as z from "zod";
 import {
 	activities,
@@ -7,6 +8,45 @@ import {
 	qualitativeMetricLabels,
 } from "#/db/schema";
 import { db } from "../db/index";
+
+export const getActivitySF = createServerFn()
+	.inputValidator(z.object({ activityId: z.coerce.number() }))
+	.handler(async ({ data }) => {
+		const activity = await db
+			.select()
+			.from(activities)
+			.where(eq(activities.id, data.activityId));
+
+		const metricsRows = await db
+			.select()
+			.from(metrics)
+			.where(eq(metrics.activityId, data.activityId))
+			.leftJoin(
+				qualitativeMetricLabels,
+				eq(metrics.id, qualitativeMetricLabels.metricId),
+			);
+
+		// metricsRows returns an items for every metric and every quialitative_metric_labels
+		// so there's duplicated metric values
+		// 2. Extract just the values (remove the id labels)
+		const groupedMetrics = Object.values(
+			// 1. We group them for metric id
+			Object.groupBy(metricsRows, ({ metrics }) => {
+				return metrics.id;
+			}),
+		).map((v) => {
+			// 3. We extract just the first metric information and then labels
+			// we extract the labels in a list
+			if (!v) return null;
+			const metric = v[0].metrics;
+			const labels = v
+				.map((m) => m.quialitative_metric_labels)
+				.filter((l) => l != null);
+			return { ...metric, labels };
+		});
+
+		return { activity, metrics: groupedMetrics };
+	});
 
 // TODO: Migrate schemas to it's own file
 export const metricSchema = z.object({
@@ -36,7 +76,13 @@ export const createActivityAndMetricsSF = createServerFn()
 
 			const insertMetricsResult = await db
 				.insert(metrics)
-				.values(data.metrics.map((m) => ({ label: m.label, type: m.type })))
+				.values(
+					data.metrics.map((m) => ({
+						label: m.label,
+						type: m.type,
+						activityId,
+					})),
+				)
 				.returning({ id: metrics.id });
 
 			if (insertMetricsResult.length !== data.metrics.length) {
