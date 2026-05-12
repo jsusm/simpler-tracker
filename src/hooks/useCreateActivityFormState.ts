@@ -1,3 +1,4 @@
+import { createClientOnlyFn } from "@tanstack/react-start";
 import type { ActionDispatch } from "react";
 import * as z from 'zod'
 
@@ -6,13 +7,16 @@ export type CreateActivityStepFormStepState = {
   updateMetricIdx?: number | undefined,
 }
 
+const metricValues = ["numeric", "qualitative"] as const
+type metricValuesType = typeof metricValues[number]
+
 export type CreateActivityStepFormStateType = {
   data: {
     title: string;
     description: string;
     metrics: {
       label: string;
-      type: string;
+      type: metricValuesType;
       qualitativeLabels: string[]
     }[]
   },
@@ -26,7 +30,7 @@ const createActivityStepFormStateSchema = z.object({
     description: z.string(),
     metrics: z.array(z.object({
       label: z.string(),
-      type: z.string(),
+      type: z.enum(metricValues),
       qualitativeLabels: z.array(z.string()),
     }))
   }),
@@ -41,12 +45,12 @@ const createActivityStepFormStateSchema = z.object({
 })
 
 const defaultCreateActivityStateValues = {
-    data: { description: '', title: '', metrics: [] },
-    history: [],
-    stepState: { state: 'activityForm' as const, updateMetricIdx: undefined }
-  }
+  data: { description: '', title: '', metrics: [] },
+  history: [],
+  stepState: { state: 'activityForm' as const, updateMetricIdx: undefined }
+}
 
-export function getCreateActivityStepFormState(): CreateActivityStepFormStateType {
+export const getSessionCreateActivityStepFormState = createClientOnlyFn((): CreateActivityStepFormStateType => {
   const sessionStorageData = sessionStorage.getItem('CreateMetricFormState')
   if (sessionStorageData) {
     const data = createActivityStepFormStateSchema.safeParse(JSON.parse(sessionStorageData))
@@ -55,16 +59,21 @@ export function getCreateActivityStepFormState(): CreateActivityStepFormStateTyp
     }
   }
   return defaultCreateActivityStateValues
-}
+})
 
-export function saveCreateActivityStepFormState(state: CreateActivityStepFormStateType) {
+export const saveSessionCreateActivityStepFormState = createClientOnlyFn((state: CreateActivityStepFormStateType)  => {
   sessionStorage.setItem('CreateMetricFormState', JSON.stringify(state))
-}
+})
+
+export const clearSessionCreateActivityStepFormState = createClientOnlyFn(()  => {
+  sessionStorage.removeItem('CreateMetricFormState')
+})
+
 
 export type CreateActivityStepFormActionType =
   { type: 'setActivityDone', payload: { title: string, description: string } }
   | { type: 'removeMetric', payload: { idx: number } }
-  | { type: 'addMetricDone', payload: { label: string, type: string, qualitativeLabels: string[] } }
+  | { type: 'addMetricDone', payload: { label: string, type: metricValuesType, qualitativeLabels: string[] } }
   | { type: 'removeMetricDone' }
   | { type: 'goToActivityForm' }
   | { type: 'goToMetric', payload: { idx: number } }

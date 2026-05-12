@@ -2,11 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CreateMetricForm } from "#/components/blocks/CreateMetricForm";
 import { ActivityFormCheckout } from "#/components/blocks/ActivityFormCheckout";
 import { useEffect, useReducer } from "react";
-import { CreateActivityStepFormReducer, getCreateActivityStepFormState, saveCreateActivityStepFormState, type CreateActivityDispatcherType, type CreateActivityStepFormStateType, type CreateActivityStepFormStepState } from "#/hooks/useCreateActivityFormState";
+import { CreateActivityStepFormReducer, getSessionCreateActivityStepFormState, saveSessionCreateActivityStepFormState, type CreateActivityDispatcherType, type CreateActivityStepFormStateType, type CreateActivityStepFormStepState } from "#/hooks/useCreateActivityFormState";
 import { CreateActivityForm } from "#/components/blocks/CreateActivityForm";
 
 export const Route = createFileRoute("/activity/create")({
   component: RouteComponent,
+  ssr: 'data-only',
 });
 
 const activityFormStateComponents: { [key in CreateActivityStepFormStepState['state']]: React.FC<{ dispatcher: CreateActivityDispatcherType, formState: CreateActivityStepFormStateType }> } = {
@@ -16,10 +17,12 @@ const activityFormStateComponents: { [key in CreateActivityStepFormStepState['st
 }
 
 function RouteComponent() {
-  const [formState, stepFormDispatcher] = useReducer(CreateActivityStepFormReducer, getCreateActivityStepFormState())
+  const [formState, stepFormDispatcher] = useReducer(CreateActivityStepFormReducer, getSessionCreateActivityStepFormState())
+
   useEffect(() => {
-    saveCreateActivityStepFormState(formState)
+    saveSessionCreateActivityStepFormState(formState)
   }, [formState])
+
   const CurrComp = activityFormStateComponents[formState.stepState.state]
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted px-2 py-10 md:p-10">

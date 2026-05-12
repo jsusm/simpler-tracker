@@ -11,12 +11,14 @@ import {
 import { FieldGroup, FieldSet } from "../ui/field";
 import { Button } from "../ui/button";
 import { getDefaultActivityMetricValuesFromState, type CreateActivityDispatcherType, type CreateActivityStepFormStateType } from "#/hooks/useCreateActivityFormState";
+import { metricSchema } from "#/server/activities";
 
 export function CreateMetricForm({ dispatcher: formDispatcher, formState: activityFormState }: { dispatcher: CreateActivityDispatcherType, formState: CreateActivityStepFormStateType }) {
   const form = useAppForm({
     defaultValues: getDefaultActivityMetricValuesFromState(activityFormState),
     onSubmit({ value }) {
-      formDispatcher({ type: 'addMetricDone', payload: value })
+      const payload = metricSchema.parse(value)
+      formDispatcher({ type: 'addMetricDone', payload })
     }
   });
 

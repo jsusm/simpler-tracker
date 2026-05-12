@@ -96,7 +96,7 @@ export function QualitativeLabelsInput({
 				{labels.length ? (
 					<div className="space-y-2">
 						{labels.map((labelValue, index) => (
-							<InputGroup>
+							<InputGroup key={`${index}`}>
 								<InputGroupInput
 									value={labelValue}
 									onChange={(event) => renameLabel(index, event.target.value)}
