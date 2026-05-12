@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { type PropsWithChildren, useId } from "react";
 import { useAppForm } from "#/hooks/demo.form";
 import type {
 	CreateActivityDispatcherType,
@@ -14,12 +14,14 @@ import {
 } from "../ui/card";
 import { FieldGroup, FieldSet } from "../ui/field";
 
-export function CreateActivityForm({
+export function ActivityForm({
 	dispatcher: formDispatcher,
 	formState: activityFormState,
-}: {
+	variant,
+}: PropsWithChildren & {
 	dispatcher: CreateActivityDispatcherType;
 	formState: CreateActivityStepFormStateType;
+	variant: "create" | "update";
 }) {
 	const form = useAppForm({
 		defaultValues: {
@@ -27,7 +29,6 @@ export function CreateActivityForm({
 			description: activityFormState.data.description,
 		},
 		async onSubmit({ value }) {
-			console.log({ value });
 			formDispatcher({ type: "setActivityDone", payload: value });
 		},
 	});
@@ -36,10 +37,24 @@ export function CreateActivityForm({
 		<div>
 			<Card>
 				<CardHeader className="">
-					<CardTitle className="text-xl">Create a New Activity</CardTitle>
-					<CardDescription>
-						First let't give it a name, then define what data you want to track
-					</CardDescription>
+					{variant === "create" ? (
+						<>
+							<CardTitle className="text-xl">Create a New Activity</CardTitle>
+							<CardDescription>
+								First let't give it a name, then define what data you want to
+								track
+							</CardDescription>
+						</>
+					) : (
+						<>
+							<CardTitle className="text-xl">
+								Update {activityFormState.data.title}
+							</CardTitle>
+							<CardDescription>
+								Give it a name, then define what data you want to track.
+							</CardDescription>
+						</>
+					)}
 				</CardHeader>
 				<CardContent>
 					<form

@@ -21,9 +21,11 @@ import { SubmittingButton } from "../ui/SubmittingButton";
 export function ActivityFormCheckout({
 	dispatcher: formDispatcher,
 	formState: activityFormState,
+  variant,
 }: {
 	dispatcher: CreateActivityDispatcherType;
 	formState: CreateActivityStepFormStateType;
+  variant: 'create' | 'update'
 }) {
 	const navigate = useNavigate();
 	const { mutateAsync: createActivityMutation, isPending } = useMutation({
@@ -110,7 +112,7 @@ export function ActivityFormCheckout({
 						className="md:flex-1"
 						onClick={handleCreateActivity}
 					>
-						Create Activity
+            {variant === "create" ? "Create Activity" : "Update Activity"}
 					</SubmittingButton>
 				</CardFooter>
 			</Card>

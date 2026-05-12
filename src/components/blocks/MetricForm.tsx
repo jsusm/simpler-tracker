@@ -17,7 +17,7 @@ import {
 } from "../ui/card";
 import { FieldGroup, FieldSet } from "../ui/field";
 
-export function CreateMetricForm({
+export function MetricForm({
 	dispatcher: formDispatcher,
 	formState: activityFormState,
 }: {
