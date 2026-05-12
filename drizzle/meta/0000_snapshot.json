@@ -1,5 +1,5 @@
 {
-  "id": "a88c3492-84c4-405a-8cad-230f9ff0e709",
+  "id": "e7f7e735-22f3-4f61-a770-5e5171cb50b7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -70,10 +70,30 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "activityId": {
+          "name": "activityId",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "metrics_activityId_activities_id_fk": {
+          "name": "metrics_activityId_activities_id_fk",
+          "tableFrom": "metrics",
+          "tableTo": "activities",
+          "columnsFrom": [
+            "activityId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
