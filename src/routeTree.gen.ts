@@ -12,15 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ActivitiesIndexRouteImport } from './routes/activities/index'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoTableRouteImport } from './routes/demo/table'
-import { Route as DemoNeonRouteImport } from './routes/demo/neon'
-import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as ActivitiesCreateRouteImport } from './routes/activities/create'
 import { Route as ActivitiesActivityIdRouteImport } from './routes/activities/$activityId'
 import { Route as ActivityActivityIdIndexRouteImport } from './routes/activity/$activityId/index'
-import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
-import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
 import { Route as ActivityActivityIdUpdateRouteImport } from './routes/activity/$activityId/update'
 
 const AboutRoute = AboutRouteImport.update({
@@ -38,26 +32,6 @@ const ActivitiesIndexRoute = ActivitiesIndexRouteImport.update({
   path: '/activities/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoTableRoute = DemoTableRouteImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoNeonRoute = DemoNeonRouteImport.update({
-  id: '/demo/neon',
-  path: '/demo/neon',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoDrizzleRoute = DemoDrizzleRouteImport.update({
-  id: '/demo/drizzle',
-  path: '/demo/drizzle',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ActivitiesCreateRoute = ActivitiesCreateRouteImport.update({
   id: '/activities/create',
   path: '/activities/create',
@@ -73,16 +47,6 @@ const ActivityActivityIdIndexRoute = ActivityActivityIdIndexRouteImport.update({
   path: '/activity/$activityId/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
-  id: '/demo/form/simple',
-  path: '/demo/form/simple',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
-  id: '/demo/form/address',
-  path: '/demo/form/address',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ActivityActivityIdUpdateRoute =
   ActivityActivityIdUpdateRouteImport.update({
     id: '/activity/$activityId/update',
@@ -95,14 +59,8 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/activities/create': typeof ActivitiesCreateRoute
-  '/demo/drizzle': typeof DemoDrizzleRoute
-  '/demo/neon': typeof DemoNeonRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/activities/': typeof ActivitiesIndexRoute
   '/activity/$activityId/update': typeof ActivityActivityIdUpdateRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
   '/activity/$activityId/': typeof ActivityActivityIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -110,14 +68,8 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/activities/create': typeof ActivitiesCreateRoute
-  '/demo/drizzle': typeof DemoDrizzleRoute
-  '/demo/neon': typeof DemoNeonRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/activities': typeof ActivitiesIndexRoute
   '/activity/$activityId/update': typeof ActivityActivityIdUpdateRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
   '/activity/$activityId': typeof ActivityActivityIdIndexRoute
 }
 export interface FileRoutesById {
@@ -126,14 +78,8 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/activities/$activityId': typeof ActivitiesActivityIdRoute
   '/activities/create': typeof ActivitiesCreateRoute
-  '/demo/drizzle': typeof DemoDrizzleRoute
-  '/demo/neon': typeof DemoNeonRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/activities/': typeof ActivitiesIndexRoute
   '/activity/$activityId/update': typeof ActivityActivityIdUpdateRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
   '/activity/$activityId/': typeof ActivityActivityIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -143,14 +89,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/activities/$activityId'
     | '/activities/create'
-    | '/demo/drizzle'
-    | '/demo/neon'
-    | '/demo/table'
-    | '/demo/tanstack-query'
     | '/activities/'
     | '/activity/$activityId/update'
-    | '/demo/form/address'
-    | '/demo/form/simple'
     | '/activity/$activityId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -158,14 +98,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/activities/$activityId'
     | '/activities/create'
-    | '/demo/drizzle'
-    | '/demo/neon'
-    | '/demo/table'
-    | '/demo/tanstack-query'
     | '/activities'
     | '/activity/$activityId/update'
-    | '/demo/form/address'
-    | '/demo/form/simple'
     | '/activity/$activityId'
   id:
     | '__root__'
@@ -173,14 +107,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/activities/$activityId'
     | '/activities/create'
-    | '/demo/drizzle'
-    | '/demo/neon'
-    | '/demo/table'
-    | '/demo/tanstack-query'
     | '/activities/'
     | '/activity/$activityId/update'
-    | '/demo/form/address'
-    | '/demo/form/simple'
     | '/activity/$activityId/'
   fileRoutesById: FileRoutesById
 }
@@ -189,14 +117,8 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ActivitiesActivityIdRoute: typeof ActivitiesActivityIdRoute
   ActivitiesCreateRoute: typeof ActivitiesCreateRoute
-  DemoDrizzleRoute: typeof DemoDrizzleRoute
-  DemoNeonRoute: typeof DemoNeonRoute
-  DemoTableRoute: typeof DemoTableRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   ActivitiesIndexRoute: typeof ActivitiesIndexRoute
   ActivityActivityIdUpdateRoute: typeof ActivityActivityIdUpdateRoute
-  DemoFormAddressRoute: typeof DemoFormAddressRoute
-  DemoFormSimpleRoute: typeof DemoFormSimpleRoute
   ActivityActivityIdIndexRoute: typeof ActivityActivityIdIndexRoute
 }
 
@@ -223,34 +145,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ActivitiesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/neon': {
-      id: '/demo/neon'
-      path: '/demo/neon'
-      fullPath: '/demo/neon'
-      preLoaderRoute: typeof DemoNeonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/drizzle': {
-      id: '/demo/drizzle'
-      path: '/demo/drizzle'
-      fullPath: '/demo/drizzle'
-      preLoaderRoute: typeof DemoDrizzleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/activities/create': {
       id: '/activities/create'
       path: '/activities/create'
@@ -272,20 +166,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ActivityActivityIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/form/simple': {
-      id: '/demo/form/simple'
-      path: '/demo/form/simple'
-      fullPath: '/demo/form/simple'
-      preLoaderRoute: typeof DemoFormSimpleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/form/address': {
-      id: '/demo/form/address'
-      path: '/demo/form/address'
-      fullPath: '/demo/form/address'
-      preLoaderRoute: typeof DemoFormAddressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/activity/$activityId/update': {
       id: '/activity/$activityId/update'
       path: '/activity/$activityId/update'
@@ -301,14 +181,8 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ActivitiesActivityIdRoute: ActivitiesActivityIdRoute,
   ActivitiesCreateRoute: ActivitiesCreateRoute,
-  DemoDrizzleRoute: DemoDrizzleRoute,
-  DemoNeonRoute: DemoNeonRoute,
-  DemoTableRoute: DemoTableRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   ActivitiesIndexRoute: ActivitiesIndexRoute,
   ActivityActivityIdUpdateRoute: ActivityActivityIdUpdateRoute,
-  DemoFormAddressRoute: DemoFormAddressRoute,
-  DemoFormSimpleRoute: DemoFormSimpleRoute,
   ActivityActivityIdIndexRoute: ActivityActivityIdIndexRoute,
 }
 export const routeTree = rootRouteImport
