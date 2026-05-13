@@ -6,7 +6,10 @@ import {
 	type CreateActivityStepFormStateType,
 	clearSessionCreateActivityStepFormState,
 } from "#/hooks/useCreateActivityFormState";
-import { createActivityAndMetricsSF } from "#/server/activities";
+import {
+	createActivityAndMetricsSF,
+	updateActivityAndMetricsSF,
+} from "#/server/activities";
 import { Button } from "../ui/button";
 import {
 	Card,
@@ -21,23 +24,48 @@ import { SubmittingButton } from "../ui/SubmittingButton";
 export function ActivityFormCheckout({
 	dispatcher: formDispatcher,
 	formState: activityFormState,
-  variant,
+	variant,
+	activityId,
 }: {
 	dispatcher: CreateActivityDispatcherType;
 	formState: CreateActivityStepFormStateType;
-  variant: 'create' | 'update'
+	variant: "create" | "update";
+	activityId?: number;
 }) {
 	const navigate = useNavigate();
-	const { mutateAsync: createActivityMutation, isPending } = useMutation({
-		mutationFn: createActivityAndMetricsSF,
-		onSuccess() {
-			clearSessionCreateActivityStepFormState();
-			navigate({ to: "/" });
-		},
-	});
+	const { mutateAsync: createActivityMutation, isPending: isCreating } =
+		useMutation({
+			mutationFn: createActivityAndMetricsSF,
+			onSuccess() {
+				clearSessionCreateActivityStepFormState();
+				navigate({ to: "/activities" });
+			},
+		});
+	const { mutateAsync: updateActivityMutation, isPending: isUpdating } =
+		useMutation({
+			mutationFn: updateActivityAndMetricsSF,
+			onSuccess() {
+				if (!activityId) return;
+				navigate({
+					to: "/activity/$activityId",
+					params: { activityId: activityId.toString() },
+				});
+			},
+		});
 	const handleCreateActivity = () => {
+		if (variant === "update") {
+			if (!activityId) {
+				throw new Error("Missing activity id for update");
+			}
+			updateActivityMutation({
+				data: { ...activityFormState.data, activityId },
+			});
+			return;
+		}
+
 		createActivityMutation({ data: activityFormState.data });
 	};
+	const isPending = isCreating || isUpdating;
 	return (
 		<div>
 			<Card>
@@ -64,7 +92,10 @@ export function ActivityFormCheckout({
 
 						<ul className="flex flex-col gap-2">
 							{activityFormState.data.metrics.map((m, idx) => (
-								<li className="relative flex items-center" key={m.label}>
+								<li
+									className="relative flex items-center"
+									key={m.id ?? m.label}
+								>
 									<Button
 										variant="outline"
 										className="justify-between pr-8 w-full"
@@ -77,7 +108,9 @@ export function ActivityFormCheckout({
 											<span className="text-muted-foreground">
 												{m.type === "numeric"
 													? "Numeric"
-													: m.qualitativeLabels.join(", ")}
+													: m.qualitativeLabels
+															.map((label) => label.label)
+															.join(", ")}
 											</span>
 										</div>
 									</Button>
@@ -112,7 +145,7 @@ export function ActivityFormCheckout({
 						className="md:flex-1"
 						onClick={handleCreateActivity}
 					>
-            {variant === "create" ? "Create Activity" : "Update Activity"}
+						{variant === "create" ? "Create Activity" : "Update Activity"}
 					</SubmittingButton>
 				</CardFooter>
 			</Card>

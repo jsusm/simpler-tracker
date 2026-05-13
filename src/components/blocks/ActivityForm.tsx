@@ -67,14 +67,12 @@ export function ActivityForm({
 					>
 						<FieldSet>
 							<FieldGroup>
-								<form.AppField
-									name="title"
-									children={(field) => <field.TextField label="Title" />}
-								/>
-								<form.AppField
-									name="description"
-									children={(field) => <field.TextField label="Description" />}
-								/>
+								<form.AppField name="title">
+									{(field) => <field.TextField label="Title" />}
+								</form.AppField>
+								<form.AppField name="description">
+									{(field) => <field.TextField label="Description" />}
+								</form.AppField>
 							</FieldGroup>
 						</FieldSet>
 					</form>

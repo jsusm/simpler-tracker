@@ -8,11 +8,13 @@ export function Select({
 	values,
 	placeholder,
 	description,
+	disabled,
 }: {
 	label: string;
 	values: Array<{ label: string; value: string }>;
 	placeholder?: string;
 	description?: string;
+	disabled?: boolean;
 }) {
 	const field = useFieldContext<string>();
 	const errors = useStore(field.store, (state) => state.meta.errors);
@@ -24,6 +26,7 @@ export function Select({
 				name={field.name}
 				value={field.state.value}
 				onValueChange={(value) => field.handleChange(value)}
+				disabled={disabled}
 			>
 				<ShadcnSelect.SelectTrigger className="w-full">
 					<ShadcnSelect.SelectValue placeholder={placeholder} />

@@ -9,6 +9,7 @@ import {
 } from "#/components/ui/field";
 import { Input } from "#/components/ui/input";
 import { useFieldContext } from "#/hooks/demo.form-context";
+import type { ActivityMetricLabelFormValue } from "#/hooks/useCreateActivityFormState";
 import {
 	InputGroup,
 	InputGroupAddon,
@@ -27,9 +28,13 @@ export function QualitativeLabelsInput({
 	description,
 	placeholder = "Add a label",
 }: QualitativeLabelsInputProps) {
-	const field = useFieldContext<string[]>();
+	const field = useFieldContext<ActivityMetricLabelFormValue[]>();
 	const [draftLabel, setDraftLabel] = useState("");
 	const labels = Array.isArray(field.state.value) ? field.state.value : [];
+
+	function normalizeOrder(nextLabels: ActivityMetricLabelFormValue[]) {
+		return nextLabels.map((label, index) => ({ ...label, order: index }));
+	}
 
 	function addLabel() {
 		const nextLabel = draftLabel.trim();
@@ -38,21 +43,25 @@ export function QualitativeLabelsInput({
 			return;
 		}
 
-		field.handleChange([...labels, nextLabel]);
+		field.handleChange(
+			normalizeOrder([...labels, { label: nextLabel, order: labels.length }]),
+		);
 		setDraftLabel("");
 	}
 
 	function renameLabel(index: number, value: string) {
 		field.handleChange(
 			labels.map((label, currentIndex) =>
-				currentIndex === index ? value : label,
+				currentIndex === index ? { ...label, label: value } : label,
 			),
 		);
 	}
 
 	function removeLabel(index: number) {
 		field.handleChange(
-			labels.filter((_, currentIndex) => currentIndex !== index),
+			normalizeOrder(
+				labels.filter((_, currentIndex) => currentIndex !== index),
+			),
 		);
 	}
 
@@ -66,7 +75,7 @@ export function QualitativeLabelsInput({
 		const nextLabels = [...labels];
 		const [label] = nextLabels.splice(index, 1);
 		nextLabels.splice(nextIndex, 0, label);
-		field.handleChange(nextLabels);
+		field.handleChange(normalizeOrder(nextLabels));
 	}
 
 	return (
@@ -96,9 +105,9 @@ export function QualitativeLabelsInput({
 				{labels.length ? (
 					<div className="space-y-2">
 						{labels.map((labelValue, index) => (
-							<InputGroup key={`${index}`}>
+							<InputGroup key={labelValue.id ?? `${labelValue.label}-${index}`}>
 								<InputGroupInput
-									value={labelValue}
+									value={labelValue.label}
 									onChange={(event) => renameLabel(index, event.target.value)}
 								/>
 								<InputGroupAddon align={"inline-end"}>
@@ -107,7 +116,7 @@ export function QualitativeLabelsInput({
 										variant="ghost"
 										size="icon-xs"
 										onClick={() => moveLabel(index, -1)}
-										aria-label={`Move ${labelValue || `label ${index + 1}`} up`}
+										aria-label={`Move ${labelValue.label || `label ${index + 1}`} up`}
 									>
 										<ArrowUpIcon />
 									</InputGroupButton>
@@ -116,7 +125,7 @@ export function QualitativeLabelsInput({
 										variant="ghost"
 										size="icon-xs"
 										onClick={() => moveLabel(index, 1)}
-										aria-label={`Move ${labelValue || `label ${index + 1}`} down`}
+										aria-label={`Move ${labelValue.label || `label ${index + 1}`} down`}
 									>
 										<ArrowDownIcon />
 									</InputGroupButton>
@@ -126,7 +135,7 @@ export function QualitativeLabelsInput({
 										variant="destructive"
 										size="icon-xs"
 										onClick={() => removeLabel(index)}
-										aria-label={`Delete ${labelValue || `label ${index + 1}`}`}
+										aria-label={`Delete ${labelValue.label || `label ${index + 1}`}`}
 									>
 										<Trash2Icon />
 									</InputGroupButton>

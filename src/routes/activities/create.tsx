@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useReducer } from "react";
-import { ActivityFormCheckout } from "#/components/blocks/ActivityFormCheckout";
 import { ActivityForm } from "#/components/blocks/ActivityForm";
+import { ActivityFormCheckout } from "#/components/blocks/ActivityFormCheckout";
 import { MetricForm } from "#/components/blocks/MetricForm";
 import {
 	type CreateActivityDispatcherType,
@@ -21,7 +21,8 @@ const activityFormStateComponents: {
 	[key in CreateActivityStepFormStepState["state"]]: React.FC<{
 		dispatcher: CreateActivityDispatcherType;
 		formState: CreateActivityStepFormStateType;
-    variant: "create" | "update"
+		variant: "create" | "update";
+		activityId?: number;
 	}>;
 } = {
 	activityForm: ActivityForm,
@@ -43,7 +44,11 @@ function RouteComponent() {
 	return (
 		<div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted px-2 py-10 md:p-10">
 			<div className="flex w-full max-w-md flex-col gap-6">
-				<CurrComp formState={formState} dispatcher={stepFormDispatcher} variant="create"/>
+				<CurrComp
+					dispatcher={stepFormDispatcher}
+					formState={formState}
+					variant="create"
+				/>
 			</div>
 		</div>
 	);

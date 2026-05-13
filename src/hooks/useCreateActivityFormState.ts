@@ -10,15 +10,24 @@ export type CreateActivityStepFormStepState = {
 const metricValues = ["numeric", "qualitative"] as const;
 type metricValuesType = (typeof metricValues)[number];
 
+export type ActivityMetricLabelFormValue = {
+	id?: number;
+	label: string;
+	order: number;
+};
+
+export type ActivityMetricFormValue = {
+	id?: number;
+	label: string;
+	type: metricValuesType;
+	qualitativeLabels: ActivityMetricLabelFormValue[];
+};
+
 export type CreateActivityStepFormStateType = {
 	data: {
 		title: string;
 		description: string;
-		metrics: {
-			label: string;
-			type: metricValuesType;
-			qualitativeLabels: string[];
-		}[];
+		metrics: ActivityMetricFormValue[];
 	};
 	stepState: CreateActivityStepFormStepState;
 	history: CreateActivityStepFormStepState[];
@@ -30,9 +39,16 @@ const createActivityStepFormStateSchema = z.object({
 		description: z.string(),
 		metrics: z.array(
 			z.object({
+				id: z.number().optional(),
 				label: z.string(),
 				type: z.enum(metricValues),
-				qualitativeLabels: z.array(z.string()),
+				qualitativeLabels: z.array(
+					z.object({
+						id: z.number().optional(),
+						label: z.string(),
+						order: z.number(),
+					}),
+				),
 			}),
 		),
 	}),
@@ -86,11 +102,7 @@ export type CreateActivityStepFormActionType =
 	| { type: "removeMetric"; payload: { idx: number } }
 	| {
 			type: "addMetricDone";
-			payload: {
-				label: string;
-				type: metricValuesType;
-				qualitativeLabels: string[];
-			};
+			payload: ActivityMetricFormValue;
 	  }
 	| { type: "removeMetricDone" }
 	| { type: "goToActivityForm" }
@@ -223,7 +235,7 @@ export function getDefaultActivityMetricValuesFromState(
 	const defaultValues = {
 		label: "",
 		type: "",
-		qualitativeLabels: [] as string[],
+		qualitativeLabels: [] as ActivityMetricLabelFormValue[],
 	};
 	if (state.stepState.updateMetricIdx !== undefined) {
 		const stateMetric = state.data.metrics[state.stepState.updateMetricIdx];

@@ -24,6 +24,10 @@ export function MetricForm({
 	dispatcher: CreateActivityDispatcherType;
 	formState: CreateActivityStepFormStateType;
 }) {
+	const isPersistedMetric =
+		activityFormState.stepState.updateMetricIdx !== undefined &&
+		activityFormState.data.metrics[activityFormState.stepState.updateMetricIdx]
+			?.id !== undefined;
 	const form = useAppForm({
 		defaultValues: getDefaultActivityMetricValuesFromState(activityFormState),
 		onSubmit({ value }) {
@@ -39,12 +43,11 @@ export function MetricForm({
 			<Card>
 				<CardHeader className="">
 					<CardTitle className="text-xl">
-						<form.Subscribe
-							selector={(state) => state.values.label}
-							children={(label) =>
+						<form.Subscribe selector={(state) => state.values.label}>
+							{(label) =>
 								`${activityFormState.data.title} Activity - ${label ? label : "New"} Metric`
 							}
-						/>
+						</form.Subscribe>
 					</CardTitle>
 					<CardDescription className="">
 						You can choose between a numeric metric like units, hours, or
@@ -62,18 +65,16 @@ export function MetricForm({
 					>
 						<FieldSet>
 							<FieldGroup>
-								<form.AppField
-									name="label"
-									children={(field) => (
+								<form.AppField name="label">
+									{(field) => (
 										<field.TextField
 											placeholder="time spended, distance, how i feel, how good..."
 											label="Metric Label"
 										/>
 									)}
-								/>
-								<form.AppField
-									name="type"
-									children={(field) => (
+								</form.AppField>
+								<form.AppField name="type">
+									{(field) => (
 										<field.Select
 											placeholder="Type"
 											label="Type"
@@ -81,25 +82,29 @@ export function MetricForm({
 												{ label: "Numeric", value: "numeric" },
 												{ label: "Qualitative", value: "qualitative" },
 											]}
+											disabled={isPersistedMetric}
+											description={
+												isPersistedMetric
+													? "Metric type cannot be changed after creation."
+													: undefined
+											}
 										/>
 									)}
-								/>
-								<form.Subscribe
-									selector={(state) => state.values.type}
-									children={(type) =>
+								</form.AppField>
+								<form.Subscribe selector={(state) => state.values.type}>
+									{(type) =>
 										type === "qualitative" ? (
-											<form.AppField
-												name="qualitativeLabels"
-												children={(field) => (
+											<form.AppField name="qualitativeLabels">
+												{(field) => (
 													<field.QualitativeLabelsInput
 														label="Metric Options"
 														description="Write a label in the input below and click add, then sort them out."
 													/>
 												)}
-											/>
+											</form.AppField>
 										) : null
 									}
-								></form.Subscribe>
+								</form.Subscribe>
 							</FieldGroup>
 						</FieldSet>
 					</form>

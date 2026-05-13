@@ -16,6 +16,7 @@ export const qualitativeMetricLabels = p.pgTable("quialitative_metric_labels", {
 		.references(() => metrics.id)
 		.notNull(),
 	createdAt: p.timestamp("created_at").defaultNow(),
+	archivedAt: p.timestamp("archived_at"),
 });
 
 export const metricsEnumValues = ["numeric", "qualitative"] as const;
@@ -28,4 +29,5 @@ export const metrics = p.pgTable("metrics", {
 	type: p.varchar({ enum: metricsEnumValues, length: 12 }).notNull(),
 	createdAt: p.timestamp("created_at").defaultNow(),
 	activityId: p.serial().references(() => activities.id),
+	archivedAt: p.timestamp("archived_at"),
 });

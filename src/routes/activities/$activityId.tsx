@@ -27,7 +27,7 @@ function RouteComponent() {
 			<main className="min-h-svh bg-background px-2 py-10 md:p-10">
 				<div className="mx-auto max-w-3xl space-y-6">
 					<Button variant="ghost" asChild>
-						<Link to="/activities/">
+						<Link to="/activities">
 							<ArrowLeftIcon />
 							Back to activities
 						</Link>
@@ -49,7 +49,7 @@ function RouteComponent() {
 		<main className="min-h-svh bg-background px-2 py-10 md:p-10">
 			<div className="mx-auto max-w-3xl space-y-6">
 				<Button variant="ghost" asChild>
-					<Link to="/activities/">
+					<Link to="/activities">
 						<ArrowLeftIcon />
 						Back to activities
 					</Link>
