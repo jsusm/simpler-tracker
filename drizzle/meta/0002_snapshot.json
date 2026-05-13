@@ -1,6 +1,6 @@
 {
-  "id": "e7f7e735-22f3-4f61-a770-5e5171cb50b7",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "aeab4be3-0f00-4956-8385-3062d7bb373c",
+  "prevId": "28fe8c4d-11f7-4ddd-a159-4ac330f4e2ef",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -32,6 +32,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "archived_at": {
+          "name": "archived_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -76,6 +82,12 @@
           "type": "serial",
           "primaryKey": false,
           "notNull": true
+        },
+        "archived_at": {
+          "name": "archived_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -134,6 +146,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "archived_at": {
+          "name": "archived_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
