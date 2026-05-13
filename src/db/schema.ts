@@ -5,6 +5,7 @@ export const activities = p.pgTable("activities", {
 	title: p.varchar("title", { length: 120 }).notNull(),
 	description: p.varchar("description", { length: 255 }),
 	createdAt: p.timestamp("created_at").defaultNow(),
+	archivedAt: p.timestamp("archived_at"),
 });
 
 export const qualitativeMetricLabels = p.pgTable("quialitative_metric_labels", {

@@ -54,7 +54,7 @@ function RouteComponent() {
 					</div>
 				</header>
 				{activities.length === 0 ? (
-					<Empty className="border border-muted-foreground border-dashed">
+					<Empty className="border border-border border-dashed">
 						<EmptyHeader>
 							<EmptyMedia variant="icon">
 								<OrigamiIcon />

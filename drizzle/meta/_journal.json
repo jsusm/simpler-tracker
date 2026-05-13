@@ -15,6 +15,13 @@
       "when": 1778642586925,
       "tag": "0001_tiny_victor_mancha",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778646409225,
+      "tag": "0002_bright_satana",
+      "breakpoints": true
     }
   ]
 }

@@ -15,7 +15,9 @@ export const getActivitySF = createServerFn()
 		const activity = await db
 			.select()
 			.from(activities)
-			.where(eq(activities.id, data.activityId));
+			.where(
+				and(eq(activities.id, data.activityId), isNull(activities.archivedAt)),
+			);
 
 		const metricsRows = await db
 			.select()
@@ -302,6 +304,13 @@ export const updateActivityAndMetricsSF = createServerFn()
 	});
 
 export const listActivitiesSF = createServerFn().handler(async () => {
-	const activitiesRows = await db.select().from(activities);
+	const activitiesRows = await db.select().from(activities).where(isNull(activities.archivedAt));
 	return activitiesRows;
 });
+
+export const deleteActivitySF = createServerFn()
+	.inputValidator(z.object({ activityId: z.coerce.number() }))
+	.handler(async ({data}) => {
+		const now = new Date();
+		await db.update(activities).set({ archivedAt: now }).where(eq(activities.id, data.activityId));
+	});
