@@ -15,7 +15,6 @@ The core data model is intentionally simple:
 
 Current roadmap priorities:
 
-- Create the activity detail route.
 - Create the records model.
 - Create a form to register records for an activity.
 - Calculate statistics from recorded data.
@@ -39,37 +38,52 @@ Current roadmap priorities:
 Implemented app functionality:
 
 - `src/routes/activities/index.tsx` lists activities using `listActivitiesSF`.
-- `src/routes/activities/create.tsx` implements a multi-step client-side creation flow.
-- `src/components/blocks/CreateActivityForm.tsx` captures activity title and description.
-- `src/components/blocks/CreateMetricForm.tsx` captures metrics and qualitative labels.
-- `src/components/blocks/ActivityFormCheckout.tsx` reviews and submits the activity and its metrics.
-- `src/hooks/useCreateActivityFormState.ts` owns the reducer, step history, session storage persistence, and form state shape for the activity creation wizard.
-- `src/server/activities.ts` creates an activity and related metrics/labels, and lists activities.
+- `src/routes/activity/$activityId.tsx` shows activity detail, title, description, and active metrics. It links to the update route and renders an `Outlet` for nested routes such as `/activity/$activityId/update`.
+- `src/routes/activities/create.tsx` implements a multi-step client-side creation flow using the shared activity wizard UI with `variant="create"`.
+- `src/routes/activity/$activityId/update.tsx` implements the update flow using the same wizard UI with `variant="update"`, populated from `getActivitySF`.
+- `src/components/blocks/ActivityForm.tsx` captures activity title and description for create/update.
+- `src/components/blocks/MetricForm.tsx` captures metrics and qualitative labels. Persisted metric type is immutable in the UI.
+- `src/components/blocks/ActivityFormCheckout.tsx` reviews and submits the activity. It calls create or update server functions based on the `variant` prop.
+- `src/components/forms/QualitativeLabelsInput.tsx` edits qualitative labels while preserving optional label IDs and order.
+- `src/hooks/useCreateActivityFormState.ts` owns the reducer, step history, session storage persistence for create, and shared form state shape for the activity wizard.
+- `src/server/activities.ts` gets one activity, creates an activity with metrics, updates an activity and metrics, and lists activities.
 - `src/server/metrics.ts` contains an older standalone metric creation server function.
 
 Current database schema:
 
 - `activities`: `id`, `title`, `description`, `createdAt`.
-- `metrics`: `id`, `label`, `type`, `createdAt`.
-- `qualitativeMetricLabels`: `id`, `label`, `order`, `metricId`, `createdAt`.
+- `metrics`: `id`, `label`, `type`, `createdAt`, `activityId`, `archivedAt`.
+- `qualitativeMetricLabels`: `id`, `label`, `order`, `metricId`, `createdAt`, `archivedAt`.
 
-Important schema caveat: metrics are not currently linked to activities in `src/db/schema.ts`, even though the product model requires activity-owned metrics. Fix this before building records or activity detail behavior.
+The `metrics.activityId` relationship is now present. Active metrics and labels are represented by `archivedAt === null`. Archived metrics/labels should remain in the database because future records will reference those IDs.
+
+Activity update behavior:
+
+- `updateActivityAndMetricsSF` uses a diff-and-preserve strategy instead of replacing all metrics.
+- Existing metrics are updated in place by ID.
+- Removed metrics are archived by setting `metrics.archivedAt`.
+- Existing qualitative labels are updated in place by ID.
+- Removed qualitative labels are archived by setting `qualitativeMetricLabels.archivedAt`.
+- New metrics and labels are inserted.
+- Metric `type` is immutable after creation and the server rejects attempts to change it.
+- `neon-http` does not support transactions. Validate as much as possible before writes, avoid destructive operations, and prefer archiving over deleting.
 
 Other known caveats:
 
 - `createActivityAndMetricsSF` catches and ignores all errors. Prefer surfacing errors to the caller.
-- Activity creation inserts activity and metrics outside a transaction. Prefer one transaction once the schema relationships are corrected.
+- Activity creation inserts activity and metrics outside a transaction. Because `neon-http` does not support transactions, prefer validation before writes and non-destructive updates.
 - `qualitativeMetricLabels` table name is currently misspelled as `quialitative_metric_labels`; changing it requires a migration decision.
 - `MetricsEnumValuesType` is currently `keyof typeof metricsEnumValues`, which produces array keys rather than the union of values. Prefer `(typeof metricsEnumValues)[number]`.
 - `src/server/metrics.ts` uses `qualitativeLables` with a typo and does not await the qualitative label insertion.
-- `ActivityFormCheckout` navigates to `/` after activity creation, while activities are listed at `/activities/`.
-- The activities list currently renders each activity as `<a href="#">`; the activity detail route has not been created yet.
+- Demo routes still break full type/build checks: `src/routes/demo/neon.tsx` imports missing `getClient`, `src/routes/demo/drizzle.tsx` imports missing `todos`, and `src/routes/index.tsx` has an unused `value` parameter.
+- Full `npm run check` also reports existing unrelated Biome issues in demo/UI files. Targeted checks on the activity update files pass.
 
 ## Architecture Notes
 
 Use these conventions when extending the app:
 
 - Add routes as files under `src/routes`; TanStack Router generates `src/routeTree.gen.ts`.
+- When adding nested TanStack Router routes, ensure the parent renders an `Outlet`; `src/routes/activity/$activityId.tsx` does this for `/activity/$activityId/update`.
 - Keep server-only database work in `src/server` server functions.
 - Import app modules through `#/...` where possible; `package.json` maps `#/*` to `src/*`.
 - Keep reusable UI primitives in `src/components/ui` and app-specific composed sections in `src/components/blocks`.
@@ -82,11 +96,11 @@ Use these conventions when extending the app:
 
 For the next product step, update the data model first:
 
-- Add an `activityId` foreign key to `metrics`, or introduce an explicit join table only if metrics must be reusable across activities.
 - Add records tables after the metric relationship is clear. A practical first version is one activity record row with timestamp plus child metric value rows.
 - Model numeric and qualitative record values carefully. Numeric values can be stored as a number/decimal. Qualitative values should reference `qualitativeMetricLabels.id` so labels can be ordered and validated.
-- Build `/activities/$activityId` to show activity details, metrics, record form, and later statistics.
-- Update `/activities/` cards to link to the activity detail route.
+- Records should reference metric and qualitative label IDs, including archived IDs for historical data.
+- Build record creation UI on `/activity/$activityId` or a nested route using only non-archived metrics/labels for new records.
+- Add statistics after record insertion exists.
 
 For AI integration later:
 
