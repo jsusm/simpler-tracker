@@ -10,6 +10,7 @@ The core data model is intentionally simple:
 - An activity has one or more `metrics`.
 - A metric can be `numeric` or `qualitative`.
 - Qualitative metrics have ordered labels, such as `yes/no`, `happy/meh/sad`, or similar options.
+- Numeric metrics have a unit type that can be `kilometer`, `mile`, `hour`, `kelvin`, etc, or the default `unit`.
 - Users add `records` for an activity, with values for that activity's metrics and a timestamp for when the record happened.
 - Statistics are calculated from metric records.
 
@@ -55,7 +56,7 @@ Implemented app functionality:
 Current database schema:
 
 - `activities`: `id`, `title`, `description`, `createdAt`, `archivedAt`.
-- `metrics`: `id`, `label`, `type`, `createdAt`, `activityId`, `archivedAt`.
+- `metrics`: `id`, `label`, `type`, `createdAt`, `activityId`, `archivedAt`, `numericUnit`.
 - `qualitativeMetricLabels`: `id`, `label`, `order`, `metricId`, `createdAt`, `archivedAt`.
 - `activityRecords`: `id`, `activityId`, `recordedAt`, `createdAt`.
 - `metricRecordValues`: `id`, `recordId`, `metricId`, `numericValue`, `qualitativeLabelId`, `createdAt`.
