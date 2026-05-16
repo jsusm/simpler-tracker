@@ -26,16 +26,23 @@ import {
 	deleteActivitySF,
 	getActivitySF,
 } from "#/features/activities/server/activities";
+import { RecordsTableCard } from "#/features/records/components/RecordsTableCard";
+import { listRecordsSF } from "#/features/records/server/records";
 
 export const Route = createFileRoute("/activity/$activityId/")({
 	component: RouteComponent,
 	loader: async ({ params }) => {
-		return await getActivitySF({ data: { activityId: params.activityId } });
+		const [activityData, records] = await Promise.all([
+			getActivitySF({ data: { activityId: params.activityId } }),
+			listRecordsSF({ data: { activityId: params.activityId } }),
+		]);
+
+		return { ...activityData, records };
 	},
 });
 
 function RouteComponent() {
-	const { activity: activities, metrics } = Route.useLoaderData();
+	const { activity: activities, metrics, records } = Route.useLoaderData();
 	const params = Route.useParams();
 	const navigate = useNavigate();
 
@@ -141,6 +148,7 @@ function RouteComponent() {
 					</header>
 					<Separator />
 					<TrackingCard metrics={metrics} />
+					<RecordsTableCard metrics={metrics} records={records} />
 					<div className="space-y-3"></div>
 				</div>
 			</div>
