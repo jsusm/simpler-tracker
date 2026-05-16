@@ -1,12 +1,5 @@
 import { useId } from "react";
-import { useAppForm } from "#/hooks/demo.form";
-import {
-	type CreateActivityDispatcherType,
-	type CreateActivityStepFormStateType,
-	getDefaultActivityMetricValuesFromState,
-} from "#/hooks/useCreateActivityFormState";
-import { metricSchema } from "#/server/activities";
-import { Button } from "../ui/button";
+import { Button } from "#/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -14,8 +7,15 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "../ui/card";
-import { FieldGroup, FieldSet } from "../ui/field";
+} from "#/components/ui/card";
+import { FieldGroup, FieldSet } from "#/components/ui/field";
+import {
+	type CreateActivityDispatcherType,
+	type CreateActivityStepFormStateType,
+	getDefaultActivityMetricValuesFromState,
+} from "#/features/activities/hooks/useActivityWizardState";
+import { metricSchema } from "#/features/activities/server/activities";
+import { useAppForm } from "#/hooks/demo.form";
 
 export function MetricForm({
 	dispatcher: formDispatcher,

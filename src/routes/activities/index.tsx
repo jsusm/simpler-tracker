@@ -21,7 +21,7 @@ import {
 	ItemDescription,
 	ItemTitle,
 } from "#/components/ui/item";
-import { listActivitiesSF } from "#/server/activities";
+import { listActivitiesSF } from "#/features/activities/server/activities";
 
 export const Route = createFileRoute("/activities/")({
 	component: RouteComponent,

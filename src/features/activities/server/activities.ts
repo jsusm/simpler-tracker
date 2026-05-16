@@ -1,13 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import * as z from "zod";
+import { db } from "#/db/index";
 import {
 	activities,
 	metrics,
 	metricsEnumValues,
 	qualitativeMetricLabels,
 } from "#/db/schema";
-import { db } from "../db/index";
 
 export const getActivitySF = createServerFn()
 	.inputValidator(z.object({ activityId: z.coerce.number() }))

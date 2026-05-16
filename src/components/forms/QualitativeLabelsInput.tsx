@@ -8,8 +8,8 @@ import {
 	FieldLabel,
 } from "#/components/ui/field";
 import { Input } from "#/components/ui/input";
+import type { ActivityMetricLabelFormValue } from "#/features/activities/hooks/useActivityWizardState";
 import { useFieldContext } from "#/hooks/demo.form-context";
-import type { ActivityMetricLabelFormValue } from "#/hooks/useCreateActivityFormState";
 import {
 	InputGroup,
 	InputGroupAddon,

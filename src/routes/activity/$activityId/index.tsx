@@ -29,7 +29,10 @@ import {
 	ItemTitle,
 } from "#/components/ui/item";
 import { Separator } from "#/components/ui/separator";
-import { deleteActivitySF, getActivitySF } from "#/server/activities";
+import {
+	deleteActivitySF,
+	getActivitySF,
+} from "#/features/activities/server/activities";
 
 export const Route = createFileRoute("/activity/$activityId/")({
 	component: RouteComponent,
