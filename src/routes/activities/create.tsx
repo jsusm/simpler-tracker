@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useReducer } from "react";
-import { ActivityForm } from "#/components/blocks/ActivityForm";
-import { ActivityFormCheckout } from "#/components/blocks/ActivityFormCheckout";
-import { MetricForm } from "#/components/blocks/MetricForm";
+import { ActivityForm } from "#/features/activities/components/ActivityForm";
+import { ActivityFormCheckout } from "#/features/activities/components/ActivityFormCheckout";
+import { MetricForm } from "#/features/activities/components/MetricForm";
 import {
 	type CreateActivityDispatcherType,
 	CreateActivityStepFormReducer,
@@ -10,7 +10,7 @@ import {
 	type CreateActivityStepFormStepState,
 	getSessionCreateActivityStepFormState,
 	saveSessionCreateActivityStepFormState,
-} from "#/hooks/useCreateActivityFormState";
+} from "#/features/activities/hooks/useActivityWizardState";
 
 export const Route = createFileRoute("/activities/create")({
 	component: RouteComponent,

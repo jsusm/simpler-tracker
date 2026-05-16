@@ -16,6 +16,7 @@ import { Route as ActivitiesCreateRouteImport } from './routes/activities/create
 import { Route as ActivitiesActivityIdRouteImport } from './routes/activities/$activityId'
 import { Route as ActivityActivityIdIndexRouteImport } from './routes/activity/$activityId/index'
 import { Route as ActivityActivityIdUpdateRouteImport } from './routes/activity/$activityId/update'
+import { Route as ActivityActivityIdRecordsCreateRouteImport } from './routes/activity/$activityId/records/create'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -53,6 +54,12 @@ const ActivityActivityIdUpdateRoute =
     path: '/activity/$activityId/update',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ActivityActivityIdRecordsCreateRoute =
+  ActivityActivityIdRecordsCreateRouteImport.update({
+    id: '/activity/$activityId/records/create',
+    path: '/activity/$activityId/records/create',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/activities/': typeof ActivitiesIndexRoute
   '/activity/$activityId/update': typeof ActivityActivityIdUpdateRoute
   '/activity/$activityId/': typeof ActivityActivityIdIndexRoute
+  '/activity/$activityId/records/create': typeof ActivityActivityIdRecordsCreateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -71,6 +79,7 @@ export interface FileRoutesByTo {
   '/activities': typeof ActivitiesIndexRoute
   '/activity/$activityId/update': typeof ActivityActivityIdUpdateRoute
   '/activity/$activityId': typeof ActivityActivityIdIndexRoute
+  '/activity/$activityId/records/create': typeof ActivityActivityIdRecordsCreateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -81,6 +90,7 @@ export interface FileRoutesById {
   '/activities/': typeof ActivitiesIndexRoute
   '/activity/$activityId/update': typeof ActivityActivityIdUpdateRoute
   '/activity/$activityId/': typeof ActivityActivityIdIndexRoute
+  '/activity/$activityId/records/create': typeof ActivityActivityIdRecordsCreateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -92,6 +102,7 @@ export interface FileRouteTypes {
     | '/activities/'
     | '/activity/$activityId/update'
     | '/activity/$activityId/'
+    | '/activity/$activityId/records/create'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -101,6 +112,7 @@ export interface FileRouteTypes {
     | '/activities'
     | '/activity/$activityId/update'
     | '/activity/$activityId'
+    | '/activity/$activityId/records/create'
   id:
     | '__root__'
     | '/'
@@ -110,6 +122,7 @@ export interface FileRouteTypes {
     | '/activities/'
     | '/activity/$activityId/update'
     | '/activity/$activityId/'
+    | '/activity/$activityId/records/create'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -120,6 +133,7 @@ export interface RootRouteChildren {
   ActivitiesIndexRoute: typeof ActivitiesIndexRoute
   ActivityActivityIdUpdateRoute: typeof ActivityActivityIdUpdateRoute
   ActivityActivityIdIndexRoute: typeof ActivityActivityIdIndexRoute
+  ActivityActivityIdRecordsCreateRoute: typeof ActivityActivityIdRecordsCreateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -173,6 +187,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ActivityActivityIdUpdateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/activity/$activityId/records/create': {
+      id: '/activity/$activityId/records/create'
+      path: '/activity/$activityId/records/create'
+      fullPath: '/activity/$activityId/records/create'
+      preLoaderRoute: typeof ActivityActivityIdRecordsCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -184,6 +205,7 @@ const rootRouteChildren: RootRouteChildren = {
   ActivitiesIndexRoute: ActivitiesIndexRoute,
   ActivityActivityIdUpdateRoute: ActivityActivityIdUpdateRoute,
   ActivityActivityIdIndexRoute: ActivityActivityIdIndexRoute,
+  ActivityActivityIdRecordsCreateRoute: ActivityActivityIdRecordsCreateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

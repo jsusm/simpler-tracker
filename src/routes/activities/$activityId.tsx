@@ -9,7 +9,7 @@ import {
 	CardTitle,
 } from "#/components/ui/card";
 import { Separator } from "#/components/ui/separator";
-import { getActivitySF } from "#/server/activities";
+import { getActivitySF } from "#/features/activities/server/activities";
 
 export const Route = createFileRoute("/activities/$activityId")({
 	component: RouteComponent,

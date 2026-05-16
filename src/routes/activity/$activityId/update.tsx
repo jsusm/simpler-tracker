@@ -1,15 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useReducer } from "react";
-import { ActivityForm } from "#/components/blocks/ActivityForm";
-import { ActivityFormCheckout } from "#/components/blocks/ActivityFormCheckout";
-import { MetricForm } from "#/components/blocks/MetricForm";
+import { ActivityForm } from "#/features/activities/components/ActivityForm";
+import { ActivityFormCheckout } from "#/features/activities/components/ActivityFormCheckout";
+import { MetricForm } from "#/features/activities/components/MetricForm";
 import {
 	type CreateActivityDispatcherType,
 	CreateActivityStepFormReducer,
 	type CreateActivityStepFormStateType,
 	type CreateActivityStepFormStepState,
-} from "#/hooks/useCreateActivityFormState";
-import { getActivitySF } from "#/server/activities";
+} from "#/features/activities/hooks/useActivityWizardState";
+import { getActivitySF } from "#/features/activities/server/activities";
 
 export const Route = createFileRoute("/activity/$activityId/update")({
 	component: RouteComponent,

@@ -1,13 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import * as z from "zod";
+import { db } from "#/db/index";
 import {
 	activities,
 	metrics,
 	metricsEnumValues,
 	qualitativeMetricLabels,
 } from "#/db/schema";
-import { db } from "../db/index";
 
 export const getActivitySF = createServerFn()
 	.inputValidator(z.object({ activityId: z.coerce.number() }))
@@ -304,13 +304,19 @@ export const updateActivityAndMetricsSF = createServerFn()
 	});
 
 export const listActivitiesSF = createServerFn().handler(async () => {
-	const activitiesRows = await db.select().from(activities).where(isNull(activities.archivedAt));
+	const activitiesRows = await db
+		.select()
+		.from(activities)
+		.where(isNull(activities.archivedAt));
 	return activitiesRows;
 });
 
 export const deleteActivitySF = createServerFn()
 	.inputValidator(z.object({ activityId: z.coerce.number() }))
-	.handler(async ({data}) => {
+	.handler(async ({ data }) => {
 		const now = new Date();
-		await db.update(activities).set({ archivedAt: now }).where(eq(activities.id, data.activityId));
+		await db
+			.update(activities)
+			.set({ archivedAt: now })
+			.where(eq(activities.id, data.activityId));
 	});

@@ -1,9 +1,4 @@
 import { type PropsWithChildren, useId } from "react";
-import { useAppForm } from "#/hooks/demo.form";
-import type {
-	CreateActivityDispatcherType,
-	CreateActivityStepFormStateType,
-} from "#/hooks/useCreateActivityFormState";
 import {
 	Card,
 	CardContent,
@@ -11,8 +6,13 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "../ui/card";
-import { FieldGroup, FieldSet } from "../ui/field";
+} from "#/components/ui/card";
+import { FieldGroup, FieldSet } from "#/components/ui/field";
+import type {
+	CreateActivityDispatcherType,
+	CreateActivityStepFormStateType,
+} from "#/features/activities/hooks/useActivityWizardState";
+import { useAppForm } from "#/hooks/demo.form";
 
 export function ActivityForm({
 	dispatcher: formDispatcher,

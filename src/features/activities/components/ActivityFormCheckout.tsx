@@ -1,16 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Trash2Icon } from "lucide-react";
-import {
-	type CreateActivityDispatcherType,
-	type CreateActivityStepFormStateType,
-	clearSessionCreateActivityStepFormState,
-} from "#/hooks/useCreateActivityFormState";
-import {
-	createActivityAndMetricsSF,
-	updateActivityAndMetricsSF,
-} from "#/server/activities";
-import { Button } from "../ui/button";
+import { Button } from "#/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -18,8 +9,17 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from "../ui/card";
-import { SubmittingButton } from "../ui/SubmittingButton";
+} from "#/components/ui/card";
+import { SubmittingButton } from "#/components/ui/SubmittingButton";
+import {
+	type CreateActivityDispatcherType,
+	type CreateActivityStepFormStateType,
+	clearSessionCreateActivityStepFormState,
+} from "#/features/activities/hooks/useActivityWizardState";
+import {
+	createActivityAndMetricsSF,
+	updateActivityAndMetricsSF,
+} from "#/features/activities/server/activities";
 
 export function ActivityFormCheckout({
 	dispatcher: formDispatcher,
