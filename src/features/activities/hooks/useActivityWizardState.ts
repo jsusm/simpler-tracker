@@ -1,6 +1,10 @@
 import { createClientOnlyFn } from "@tanstack/react-start";
 import type { ActionDispatch } from "react";
 import * as z from "zod";
+import {
+	type NumericUnitValue,
+	numericUnitValues,
+} from "#/features/activities/metricUnits";
 
 export type CreateActivityStepFormStepState = {
 	state: "activityForm" | "metricForm" | "checkout";
@@ -20,6 +24,7 @@ export type ActivityMetricFormValue = {
 	id?: number;
 	label: string;
 	type: metricValuesType;
+	numericUnit: NumericUnitValue;
 	qualitativeLabels: ActivityMetricLabelFormValue[];
 };
 
@@ -42,6 +47,7 @@ const createActivityStepFormStateSchema = z.object({
 				id: z.number().optional(),
 				label: z.string(),
 				type: z.enum(metricValues),
+				numericUnit: z.enum(numericUnitValues).default("unit"),
 				qualitativeLabels: z.array(
 					z.object({
 						id: z.number().optional(),
@@ -235,6 +241,7 @@ export function getDefaultActivityMetricValuesFromState(
 	const defaultValues = {
 		label: "",
 		type: "",
+		numericUnit: "unit",
 		qualitativeLabels: [] as ActivityMetricLabelFormValue[],
 	};
 	if (state.stepState.updateMetricIdx !== undefined) {

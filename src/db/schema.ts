@@ -31,6 +31,10 @@ export const metrics = p.pgTable("metrics", {
 	createdAt: p.timestamp("created_at").defaultNow(),
 	activityId: p.serial().references(() => activities.id),
 	archivedAt: p.timestamp("archived_at"),
+	numericUnit: p
+		.varchar("numeric_unit", { length: 60 })
+		.notNull()
+		.default("unit"),
 });
 
 export const activityRecords = p.pgTable("activity_records", {

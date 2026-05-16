@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeftIcon } from "lucide-react";
 import { useReducer } from "react";
+import { Button } from "#/components/ui/button";
 import { ActivityForm } from "#/features/activities/components/ActivityForm";
 import { ActivityFormCheckout } from "#/features/activities/components/ActivityFormCheckout";
 import { MetricForm } from "#/features/activities/components/MetricForm";
@@ -9,6 +11,7 @@ import {
 	type CreateActivityStepFormStateType,
 	type CreateActivityStepFormStepState,
 } from "#/features/activities/hooks/useActivityWizardState";
+import { isNumericUnitValue } from "#/features/activities/metricUnits";
 import { getActivitySF } from "#/features/activities/server/activities";
 
 export const Route = createFileRoute("/activity/$activityId/update")({
@@ -41,6 +44,7 @@ type UpdateActivityMetric = {
 	id: number;
 	label: string;
 	type: "numeric" | "qualitative";
+	numericUnit: string;
 	labels: {
 		id: number;
 		label: string;
@@ -81,6 +85,9 @@ function UpdateActivityForm({
 					id: metric.id,
 					label: metric.label,
 					type: metric.type,
+					numericUnit: isNumericUnitValue(metric.numericUnit)
+						? metric.numericUnit
+						: "unit",
 					qualitativeLabels: metric.labels
 						.toSorted((a, b) => a.order - b.order)
 						.map((label, index) => ({
@@ -103,7 +110,16 @@ function UpdateActivityForm({
 
 	return (
 		<div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted px-2 py-10 md:p-10">
-			<div className="flex w-full max-w-md flex-col gap-6">
+			<div className="flex w-full max-w-md flex-col gap-2">
+				<Button variant="link" className="w-fit px-0" asChild>
+					<Link
+						to="/activity/$activityId"
+						params={{ activityId: activity.id.toString() }}
+					>
+						<ArrowLeftIcon />
+						Back to activity
+					</Link>
+				</Button>
 				<CurrComp
 					activityId={activity.id}
 					dispatcher={stepFormDispatcher}

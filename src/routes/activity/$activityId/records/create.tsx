@@ -46,7 +46,7 @@ function RouteComponent() {
 
 	return (
 		<main className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted px-2 py-10 md:p-10">
-			<div className="flex w-full max-w-md flex-col gap-6">
+			<div className="flex w-full max-w-md flex-col gap-2">
 				<Button variant="link" className="w-fit px-0" asChild>
 					<Link
 						to="/activity/$activityId"

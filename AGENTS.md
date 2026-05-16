@@ -10,13 +10,12 @@ The core data model is intentionally simple:
 - An activity has one or more `metrics`.
 - A metric can be `numeric` or `qualitative`.
 - Qualitative metrics have ordered labels, such as `yes/no`, `happy/meh/sad`, or similar options.
-- Users will eventually add `records` for an activity, with values for that activity's metrics.
+- Numeric metrics have a unit type that can be `kilometer`, `mile`, `hour`, `kelvin`, etc, or the default `unit`.
+- Users add `records` for an activity, with values for that activity's metrics and a timestamp for when the record happened.
 - Statistics are calculated from metric records.
 
 Current roadmap priorities:
 
-- Create the records model.
-- Create a form to register records for an activity.
 - Calculate statistics from recorded data.
 - Add authentication.
 - Add AI integration for natural-language record creation.
@@ -28,7 +27,7 @@ Current roadmap priorities:
 - Forms: TanStack Form, wrapped by `src/hooks/demo.form.ts` and custom field components in `src/components/forms`.
 - Data fetching/state: TanStack Query, configured through `src/integrations/tanstack-query/root-provider.tsx` and SSR integration in `src/router.tsx`.
 - Database: Drizzle ORM with Neon Postgres. Schema lives in `src/db/schema.ts`; database client lives in `src/db/index.ts`.
-- Server logic: TanStack Start server functions in `src/server`.
+- Server logic: TanStack Start server functions colocated by feature under `src/features/*/server`.
 - Deployment target: Cloudflare Workers via `@cloudflare/vite-plugin` and `wrangler.jsonc`.
 - Formatting/linting: Biome. Use `npm run check`, `npm run lint`, and `npm run format`.
 - Build/test commands: `npm run build`, `npm run test`.
@@ -38,24 +37,42 @@ Current roadmap priorities:
 Implemented app functionality:
 
 - `src/routes/activities/index.tsx` lists activities using `listActivitiesSF`.
-- `src/routes/activity/$activityId.tsx` shows activity detail, title, description, and active metrics. It links to the update route and renders an `Outlet` for nested routes such as `/activity/$activityId/update`.
+- `src/routes/activity/$activityId/index.tsx` shows activity detail, title, description, active metrics, and existing records. It links to update, delete, and record creation actions.
 - `src/routes/activities/create.tsx` implements a multi-step client-side creation flow using the shared activity wizard UI with `variant="create"`.
 - `src/routes/activity/$activityId/update.tsx` implements the update flow using the same wizard UI with `variant="update"`, populated from `getActivitySF`.
-- `src/components/blocks/ActivityForm.tsx` captures activity title and description for create/update.
-- `src/components/blocks/MetricForm.tsx` captures metrics and qualitative labels. Persisted metric type is immutable in the UI.
-- `src/components/blocks/ActivityFormCheckout.tsx` reviews and submits the activity. It calls create or update server functions based on the `variant` prop.
+- `src/routes/activity/$activityId/records/create.tsx` renders the record creation form for an activity.
+- `src/features/activities/components/ActivityForm.tsx` captures activity title and description for create/update.
+- `src/features/activities/components/MetricForm.tsx` captures metrics and qualitative labels. Persisted metric type is immutable in the UI.
+- `src/features/activities/components/ActivityFormCheckout.tsx` reviews and submits the activity. It calls create or update server functions based on the `variant` prop.
+- `src/features/activities/components/TrackingCard.tsx` displays the metrics configured for an activity.
+- `src/features/records/components/RecordsTableCard.tsx` displays a basic records table with one timestamp column and one column per metric. It uses `src/components/ui/table.tsx`, not TanStack Table.
+- `src/features/records/components/CreateRecordForm.tsx` registers a new record with one input per active metric: numeric metrics use number inputs and qualitative metrics use select inputs populated from metric labels.
 - `src/components/forms/QualitativeLabelsInput.tsx` edits qualitative labels while preserving optional label IDs and order.
-- `src/hooks/useCreateActivityFormState.ts` owns the reducer, step history, session storage persistence for create, and shared form state shape for the activity wizard.
-- `src/server/activities.ts` gets one activity, creates an activity with metrics, updates an activity and metrics, and lists activities.
+- `src/features/activities/hooks/useActivityWizardState.ts` owns the reducer, step history, session storage persistence for create, and shared form state shape for the activity wizard.
+- `src/features/activities/server/activities.ts` gets one activity, creates an activity with metrics, updates an activity and metrics, deletes/archives activities, and lists activities.
+- `src/features/records/server/records.ts` creates, updates, deletes, and lists records.
 - `src/server/metrics.ts` contains an older standalone metric creation server function.
 
 Current database schema:
 
-- `activities`: `id`, `title`, `description`, `createdAt`.
-- `metrics`: `id`, `label`, `type`, `createdAt`, `activityId`, `archivedAt`.
+- `activities`: `id`, `title`, `description`, `createdAt`, `archivedAt`.
+- `metrics`: `id`, `label`, `type`, `createdAt`, `activityId`, `archivedAt`, `numericUnit`.
 - `qualitativeMetricLabels`: `id`, `label`, `order`, `metricId`, `createdAt`, `archivedAt`.
+- `activityRecords`: `id`, `activityId`, `recordedAt`, `createdAt`.
+- `metricRecordValues`: `id`, `recordId`, `metricId`, `numericValue`, `qualitativeLabelId`, `createdAt`.
 
 The `metrics.activityId` relationship is now present. Active metrics and labels are represented by `archivedAt === null`. Archived metrics/labels should remain in the database because future records will reference those IDs.
+
+Record behavior:
+
+- `activityRecords` stores one row per activity entry and has the timestamp in `recordedAt`.
+- `metricRecordValues` stores one row per metric value for a record.
+- Numeric metric values use `numericValue`; qualitative metric values use `qualitativeLabelId`.
+- `metricRecordValues` has a unique constraint on `(recordId, metricId)` so a record can only contain one value per metric.
+- Record writes validate that metric IDs belong to the activity, are active, and receive the correct value shape for their metric type.
+- Qualitative record writes validate that the selected label belongs to the submitted metric.
+- Record listing intentionally does not join qualitative labels. The activity page already has metric labels from `getActivitySF`, so the client resolves qualitative label IDs from that data.
+- Historical record display should continue to preserve references to metric IDs and qualitative label IDs, including archived definitions when needed.
 
 Activity update behavior:
 
@@ -74,7 +91,7 @@ Other known caveats:
 - Activity creation inserts activity and metrics outside a transaction. Because `neon-http` does not support transactions, prefer validation before writes and non-destructive updates.
 - `qualitativeMetricLabels` table name is currently misspelled as `quialitative_metric_labels`; changing it requires a migration decision.
 - `MetricsEnumValuesType` is currently `keyof typeof metricsEnumValues`, which produces array keys rather than the union of values. Prefer `(typeof metricsEnumValues)[number]`.
-- `src/server/metrics.ts` uses `qualitativeLables` with a typo and does not await the qualitative label insertion.
+- `src/server/metrics.ts` uses `qualitativeLables` with a typo and does not await the qualitative label insertion. It is legacy and has not been moved into a feature folder yet.
 - Demo routes still break full type/build checks: `src/routes/demo/neon.tsx` imports missing `getClient`, `src/routes/demo/drizzle.tsx` imports missing `todos`, and `src/routes/index.tsx` has an unused `value` parameter.
 - Full `npm run check` also reports existing unrelated Biome issues in demo/UI files. Targeted checks on the activity update files pass.
 
@@ -83,10 +100,11 @@ Other known caveats:
 Use these conventions when extending the app:
 
 - Add routes as files under `src/routes`; TanStack Router generates `src/routeTree.gen.ts`.
-- When adding nested TanStack Router routes, ensure the parent renders an `Outlet`; `src/routes/activity/$activityId.tsx` does this for `/activity/$activityId/update`.
-- Keep server-only database work in `src/server` server functions.
+- Keep route files thin: route definitions, loaders, mutations/navigation wiring, and page composition only.
+- Keep app-specific code in `src/features/<feature>` with `components`, `hooks`, and `server` subfolders as needed.
+- Keep server-only database work in feature server functions under `src/features/*/server`.
 - Import app modules through `#/...` where possible; `package.json` maps `#/*` to `src/*`.
-- Keep reusable UI primitives in `src/components/ui` and app-specific composed sections in `src/components/blocks`.
+- Keep reusable UI primitives in `src/components/ui` and app-specific composed sections in feature folders.
 - Keep form field adapters in `src/components/forms` and register them in `src/hooks/demo.form.ts`.
 - Prefer loaders for route-level data requirements and TanStack Query mutations for client-triggered writes.
 - Preserve the existing shadcn/Tailwind visual language unless a design task explicitly asks for a new direction.
@@ -94,13 +112,12 @@ Use these conventions when extending the app:
 
 ## Suggested Next Implementation Path
 
-For the next product step, update the data model first:
+For the next product step, build on the records foundation:
 
-- Add records tables after the metric relationship is clear. A practical first version is one activity record row with timestamp plus child metric value rows.
-- Model numeric and qualitative record values carefully. Numeric values can be stored as a number/decimal. Qualitative values should reference `qualitativeMetricLabels.id` so labels can be ordered and validated.
-- Records should reference metric and qualitative label IDs, including archived IDs for historical data.
-- Build record creation UI on `/activity/$activityId` or a nested route using only non-archived metrics/labels for new records.
-- Add statistics after record insertion exists.
+- Add record editing UI, likely under `/activity/$activityId/records/$recordId/update`.
+- Decide whether record deletion should remain hard delete or become archived/non-destructive like activities and metrics.
+- Add statistics after record insertion/listing is stable.
+- Consider extracting shared activity/metric/record DTO types if components and routes start repeating type definitions.
 
 For AI integration later:
 

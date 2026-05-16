@@ -1,0 +1,1 @@
+ALTER TABLE "metrics" ADD COLUMN "numeric_unit" varchar(60) DEFAULT 'unit' NOT NULL;

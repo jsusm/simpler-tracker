@@ -1,5 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, asc, desc, eq, inArray, isNull } from "drizzle-orm";
+import {
+	and,
+	asc,
+	count,
+	desc,
+	eq,
+	gte,
+	inArray,
+	isNull,
+	lte,
+} from "drizzle-orm";
 import * as z from "zod";
 import { db } from "#/db/index";
 import {
@@ -274,4 +284,101 @@ export const listRecordsSF = createServerFn()
 		}
 
 		return Array.from(records.values());
+	});
+
+export const listRecordChartDataSF = createServerFn()
+	.inputValidator(listRecordsSchema)
+	.handler(async ({ data }) => {
+		const now = new Date();
+		const oneMonthAgo = new Date(now);
+		oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+		const [numericRows, qualitativeRows] = await Promise.all([
+			db
+				.select({
+					metricId: metricRecordValues.metricId,
+					recordedAt: activityRecords.recordedAt,
+					numericValue: metricRecordValues.numericValue,
+				})
+				.from(activityRecords)
+				.innerJoin(
+					metricRecordValues,
+					eq(metricRecordValues.recordId, activityRecords.id),
+				)
+				.innerJoin(metrics, eq(metrics.id, metricRecordValues.metricId))
+				.where(
+					and(
+						eq(activityRecords.activityId, data.activityId),
+						eq(metrics.activityId, data.activityId),
+						eq(metrics.type, "numeric"),
+						isNull(metrics.archivedAt),
+						gte(activityRecords.recordedAt, oneMonthAgo),
+						lte(activityRecords.recordedAt, now),
+					),
+				)
+				.orderBy(
+					asc(metricRecordValues.metricId),
+					asc(activityRecords.recordedAt),
+				),
+			db
+				.select({
+					metricId: metricRecordValues.metricId,
+					qualitativeLabelId: qualitativeMetricLabels.id,
+					label: qualitativeMetricLabels.label,
+					order: qualitativeMetricLabels.order,
+					count: count(),
+				})
+				.from(activityRecords)
+				.innerJoin(
+					metricRecordValues,
+					eq(metricRecordValues.recordId, activityRecords.id),
+				)
+				.innerJoin(metrics, eq(metrics.id, metricRecordValues.metricId))
+				.innerJoin(
+					qualitativeMetricLabels,
+					eq(qualitativeMetricLabels.id, metricRecordValues.qualitativeLabelId),
+				)
+				.where(
+					and(
+						eq(activityRecords.activityId, data.activityId),
+						eq(metrics.activityId, data.activityId),
+						eq(metrics.type, "qualitative"),
+						isNull(metrics.archivedAt),
+						isNull(qualitativeMetricLabels.archivedAt),
+						gte(activityRecords.recordedAt, oneMonthAgo),
+						lte(activityRecords.recordedAt, now),
+					),
+				)
+				.groupBy(
+					metricRecordValues.metricId,
+					qualitativeMetricLabels.id,
+					qualitativeMetricLabels.label,
+					qualitativeMetricLabels.order,
+				)
+				.orderBy(
+					asc(metricRecordValues.metricId),
+					asc(qualitativeMetricLabels.order),
+				),
+		]);
+
+		return {
+			numeric: numericRows.flatMap((row) =>
+				row.numericValue === null
+					? []
+					: [
+							{
+								metricId: row.metricId,
+								recordedAt: row.recordedAt,
+								numericValue: row.numericValue,
+							},
+						],
+			),
+			qualitative: qualitativeRows.map((row) => ({
+				metricId: row.metricId,
+				qualitativeLabelId: row.qualitativeLabelId,
+				label: row.label,
+				order: row.order,
+				count: row.count,
+			})),
+		};
 	});

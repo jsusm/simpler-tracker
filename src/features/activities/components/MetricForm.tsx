@@ -14,6 +14,7 @@ import {
 	type CreateActivityStepFormStateType,
 	getDefaultActivityMetricValuesFromState,
 } from "#/features/activities/hooks/useActivityWizardState";
+import { numericUnitOptions } from "#/features/activities/metricUnits";
 import { metricSchema } from "#/features/activities/server/activities";
 import { useAppForm } from "#/hooks/demo.form";
 
@@ -93,7 +94,18 @@ export function MetricForm({
 								</form.AppField>
 								<form.Subscribe selector={(state) => state.values.type}>
 									{(type) =>
-										type === "qualitative" ? (
+										type === "numeric" ? (
+											<form.AppField name="numericUnit">
+												{(field) => (
+													<field.Select
+														placeholder="Unit"
+														label="Unit"
+														values={numericUnitOptions}
+														description="Select what numeric values for this metric represent."
+													/>
+												)}
+											</form.AppField>
+										) : type === "qualitative" ? (
 											<form.AppField name="qualitativeLabels">
 												{(field) => (
 													<field.QualitativeLabelsInput
