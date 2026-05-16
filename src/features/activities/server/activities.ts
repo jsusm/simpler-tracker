@@ -8,6 +8,7 @@ import {
 	metricsEnumValues,
 	qualitativeMetricLabels,
 } from "#/db/schema";
+import { numericUnitValues } from "#/features/activities/metricUnits";
 
 export const getActivitySF = createServerFn()
 	.inputValidator(z.object({ activityId: z.coerce.number() }))
@@ -68,6 +69,7 @@ export const metricSchema = z.object({
 	id: z.number().optional(),
 	label: z.string(),
 	type: z.enum(metricsEnumValues),
+	numericUnit: z.enum(numericUnitValues),
 	qualitativeLabels: z.array(qualitativeLabelSchema),
 });
 const createActivitySchema = z.object({
@@ -99,6 +101,7 @@ export const createActivityAndMetricsSF = createServerFn()
 					data.metrics.map((m) => ({
 						label: m.label,
 						type: m.type,
+						numericUnit: m.numericUnit,
 						activityId,
 					})),
 				)
@@ -224,7 +227,7 @@ export const updateActivityAndMetricsSF = createServerFn()
 			if (!metric.id) continue;
 			await db
 				.update(metrics)
-				.set({ label: metric.label })
+				.set({ label: metric.label, numericUnit: metric.numericUnit })
 				.where(eq(metrics.id, metric.id));
 
 			const metricExistingLabels =
@@ -278,6 +281,7 @@ export const updateActivityAndMetricsSF = createServerFn()
 				newMetrics.map((metric) => ({
 					label: metric.label,
 					type: metric.type,
+					numericUnit: metric.numericUnit,
 					activityId: data.activityId,
 				})),
 			)
