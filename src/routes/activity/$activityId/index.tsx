@@ -26,23 +26,34 @@ import {
 	deleteActivitySF,
 	getActivitySF,
 } from "#/features/activities/server/activities";
+import { RecordsChartsCard } from "#/features/records/components/RecordsChartsCard";
 import { RecordsTableCard } from "#/features/records/components/RecordsTableCard";
-import { listRecordsSF } from "#/features/records/server/records";
+import {
+	listRecordChartDataSF,
+	listRecordsSF,
+} from "#/features/records/server/records";
 
 export const Route = createFileRoute("/activity/$activityId/")({
 	component: RouteComponent,
 	loader: async ({ params }) => {
-		const [activityData, records] = await Promise.all([
+		const [activityData, records, chartData] = await Promise.all([
 			getActivitySF({ data: { activityId: params.activityId } }),
 			listRecordsSF({ data: { activityId: params.activityId } }),
+			listRecordChartDataSF({ data: { activityId: params.activityId } }),
 		]);
 
-		return { ...activityData, records };
+		return { ...activityData, records, chartData };
 	},
 });
 
 function RouteComponent() {
-	const { activity: activities, metrics, records } = Route.useLoaderData();
+	const {
+		activity: activities,
+		metrics,
+		records,
+		chartData,
+	} = Route.useLoaderData();
+  console.log(chartData)
 	const params = Route.useParams();
 	const navigate = useNavigate();
 
@@ -84,7 +95,7 @@ function RouteComponent() {
 
 	return (
 		<main className="min-h-svh bg-background px-2 py-10 md:p-10">
-			<div className="mx-auto max-w-5xl space-y-6">
+			<div className="mx-auto max-w-6xl space-y-6">
 				<Button variant="link" asChild>
 					<Link to="/activities">
 						<ArrowLeftIcon />
@@ -156,9 +167,10 @@ function RouteComponent() {
 						</div>
 					</header>
 					<Separator />
+					<RecordsChartsCard chartData={chartData} metrics={metrics} />
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 						<RecordsTableCard
-							className="col-span-2"
+							className="md:col-span-2"
 							metrics={metrics}
 							records={records}
 						/>
