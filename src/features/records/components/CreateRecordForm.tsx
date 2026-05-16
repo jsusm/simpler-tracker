@@ -34,6 +34,7 @@ type ActivityMetric = {
 	label: string;
 	type: "numeric" | "qualitative";
 	labels: Array<{ id: number; label: string }>;
+  numericUnit: string;
 } | null;
 
 type Activity = {
@@ -142,7 +143,7 @@ export function CreateRecordForm({
 							{activeMetrics.map((metric) => (
 								<Field key={metric.id}>
 									<FieldLabel htmlFor={`${formId}-metric-${metric.id}`}>
-										{metric.label}
+										{metric.label}{metric.type === "numeric" ? ` - ${metric.numericUnit}` : ""}
 									</FieldLabel>
 									{metric.type === "numeric" ? (
 										<Input
