@@ -13,11 +13,13 @@ import {
 	TableHeader,
 	TableRow,
 } from "#/components/ui/table";
+import { getNumericUnitSuffix } from "#/features/activities/metricUnits";
 
 type ActivityMetric = {
 	id: number;
 	label: string;
 	type: "numeric" | "qualitative";
+	numericUnit: string;
 	labels: Array<{ id: number; label: string }>;
 } | null;
 
@@ -125,7 +127,8 @@ function formatRecordValue({
 	if (!value) return "-";
 
 	if (metric.type === "numeric") {
-		return value.numericValue ?? "-";
+		if (value.numericValue === null) return "-";
+		return `${value.numericValue} ${getNumericUnitSuffix(metric.numericUnit)}`;
 	}
 
 	if (value.qualitativeLabelId === null) return "-";

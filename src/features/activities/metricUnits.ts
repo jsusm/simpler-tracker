@@ -36,3 +36,22 @@ export const numericUnitOptions: Array<{
 	{ label: "Fahrenheit", value: "fahrenheit" },
 	{ label: "Calories", value: "calorie" },
 ];
+
+const numericUnitSuffixes: Record<NumericUnitValue, string> = {
+	unit: "unit",
+	kilometer: "km",
+	meter: "m",
+	mile: "mi",
+	foot: "ft",
+	hour: "h",
+	minute: "min",
+	day: "d",
+	second: "s",
+	celsius: "°C",
+	fahrenheit: "°F",
+	calorie: "Cal",
+};
+
+export function getNumericUnitSuffix(value: string) {
+	return isNumericUnitValue(value) ? numericUnitSuffixes[value] : "unit";
+}
