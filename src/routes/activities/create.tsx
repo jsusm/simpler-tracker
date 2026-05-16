@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useReducer } from "react";
 import { ActivityForm } from "#/features/activities/components/ActivityForm";
 import { ActivityFormCheckout } from "#/features/activities/components/ActivityFormCheckout";
@@ -11,6 +11,8 @@ import {
 	getSessionCreateActivityStepFormState,
 	saveSessionCreateActivityStepFormState,
 } from "#/features/activities/hooks/useActivityWizardState";
+import { Button } from "#/components/ui/button";
+import { ArrowLeftIcon } from "lucide-react";
 
 export const Route = createFileRoute("/activities/create")({
 	component: RouteComponent,
@@ -43,7 +45,15 @@ function RouteComponent() {
 	const CurrComp = activityFormStateComponents[formState.stepState.state];
 	return (
 		<div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted px-2 py-10 md:p-10">
-			<div className="flex w-full max-w-md flex-col gap-6">
+			<div className="flex w-full max-w-md flex-col gap-2">
+				<Button variant="link" className="w-fit px-0" asChild>
+					<Link
+						to="/activities"
+					>
+						<ArrowLeftIcon />
+						Back to activities
+					</Link>
+				</Button>
 				<CurrComp
 					dispatcher={stepFormDispatcher}
 					formState={formState}

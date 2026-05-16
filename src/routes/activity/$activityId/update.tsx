@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useReducer } from "react";
 import { ActivityForm } from "#/features/activities/components/ActivityForm";
 import { ActivityFormCheckout } from "#/features/activities/components/ActivityFormCheckout";
@@ -10,6 +10,8 @@ import {
 	type CreateActivityStepFormStepState,
 } from "#/features/activities/hooks/useActivityWizardState";
 import { getActivitySF } from "#/features/activities/server/activities";
+import { Button } from "#/components/ui/button";
+import { ArrowLeftIcon } from "lucide-react";
 
 export const Route = createFileRoute("/activity/$activityId/update")({
 	component: RouteComponent,
@@ -103,7 +105,16 @@ function UpdateActivityForm({
 
 	return (
 		<div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted px-2 py-10 md:p-10">
-			<div className="flex w-full max-w-md flex-col gap-6">
+			<div className="flex w-full max-w-md flex-col gap-2">
+				<Button variant="link" className="w-fit px-0" asChild>
+					<Link
+						to="/activity/$activityId"
+						params={{ activityId: activity.id.toString() }}
+					>
+						<ArrowLeftIcon />
+						Back to activity
+					</Link>
+				</Button>
 				<CurrComp
 					activityId={activity.id}
 					dispatcher={stepFormDispatcher}
