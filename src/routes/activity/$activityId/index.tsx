@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { ArrowLeftIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -103,7 +103,16 @@ function RouteComponent() {
 							</p>
 						</div>
 
-						<div className="flex gap-2">
+						<div className="flex flex-col sm:flex-row gap-2">
+							<Button asChild>
+								<Link
+									to="/activity/$activityId/records/create"
+									params={{ activityId: activity.id.toString() }}
+								>
+									<PlusIcon />
+									Register Record
+								</Link>
+							</Button>
 							<Button variant="outline" asChild>
 								<Link
 									to="/activity/$activityId/update"
@@ -147,8 +156,14 @@ function RouteComponent() {
 						</div>
 					</header>
 					<Separator />
-					<TrackingCard metrics={metrics} />
-					<RecordsTableCard metrics={metrics} records={records} />
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+						<RecordsTableCard
+							className="col-span-2"
+							metrics={metrics}
+							records={records}
+						/>
+						<TrackingCard className="h-fit" metrics={metrics} />
+					</div>
 					<div className="space-y-3"></div>
 				</div>
 			</div>

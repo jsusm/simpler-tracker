@@ -20,9 +20,15 @@ type ActivityMetric = {
 	labels: Array<{ label: string }>;
 } | null;
 
-export function TrackingCard({ metrics }: { metrics: ActivityMetric[] }) {
+export function TrackingCard({
+	metrics,
+	className,
+}: {
+	metrics: ActivityMetric[];
+	className?: string;
+}) {
 	return (
-		<Card>
+		<Card className={className}>
 			<CardHeader>
 				<CardTitle>Tracking</CardTitle>
 				<CardDescription>Metrics configured for this activity.</CardDescription>

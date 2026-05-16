@@ -34,9 +34,11 @@ type ActivityRecord = {
 export function RecordsTableCard({
 	metrics,
 	records,
+	className,
 }: {
 	metrics: ActivityMetric[];
 	records: ActivityRecord[];
+	className?: string;
 }) {
 	const activeMetrics = metrics.filter((metric) => metric !== null);
 	const labelById = new Map(
@@ -46,7 +48,7 @@ export function RecordsTableCard({
 	);
 
 	return (
-		<Card>
+		<Card className={className}>
 			<CardHeader>
 				<CardTitle>Records</CardTitle>
 				<CardDescription>Recorded values for this activity.</CardDescription>
@@ -57,7 +59,7 @@ export function RecordsTableCard({
 						No records registered yet.
 					</div>
 				) : (
-					<div className="overflow-x-auto rounded-md border">
+					<div className="overflow-x-auto rounded-md border border-border">
 						<Table>
 							<TableHeader className="bg-muted/50 text-muted-foreground">
 								<TableRow>
